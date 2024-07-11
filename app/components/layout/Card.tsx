@@ -4,7 +4,7 @@ const Card = ({ classname, children, onClick }: any) => {
     return (
         <div className={classnames("bg-whiteBg dark:bg-darkBg text-white-text dark:text-dark-text p-6", classname)} style={{
             boxShadow: "4px 4px 24px 0px rgba(1, 36, 221, 0.06)", 
-            height: "calc(100vh - 80px"
+            minHeight: "calc(100vh - 80px"
         }} onClick={onClick} >
             {children}
         </div >

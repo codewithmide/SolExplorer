@@ -19,7 +19,15 @@ export default class DashboardService {
         }
     }
 
+    static async fetchEpochInfo() {
+        return this.fetchData('getEpochInfo');
+    }
+
     static async fetchRecentPerformanceSamples() {
         return this.fetchData('getRecentPerformanceSamples', [10]);
+    }
+
+    static async fetchCirculatingSupply() {
+        return this.fetchData('getSupply');
     }
 }

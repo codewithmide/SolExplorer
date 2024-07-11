@@ -17,8 +17,44 @@ body {
   font-family: "Inter", sans-serif;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-shadow {
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+/* Tooltip container */
+.tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 300px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  padding: 6px 0;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+  top: -30px;
+  font-size: smaller;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
 }
