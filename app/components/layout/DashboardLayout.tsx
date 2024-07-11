@@ -22,6 +22,7 @@ const DashboardLayout = ({ children, path }: any) => {
       <div className="flex justify-start bg-whiteBg dark:bg-darkBg text-white-text dark:text-dark-text p-2 pr-4 h-[80px]">
         <div className="w-[17rem] font-semibold text-lg flex items-center justify-center">
           Solana Data Explorer
+          {/* <Image src="/svgs/logo.svg" alt="logo" width={135} height={20}/> */}
         </div>
 
         <div className="w-full px-6 flex items-center justify-between">

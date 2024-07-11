@@ -6,37 +6,42 @@ import DashboardLayout from "../components/layout/DashboardLayout";
 import DashboardService from "../services/dashboardService";
 import { TPSChart, TPSChartLoader } from "../components/charts/TPSChart";
 import { PerformanceSample } from "../components/charts/TPSChart";
-import { TransactionData, ValidatorData } from "../common/types/dashboardTypes";
+import { EpochInfoChart, EpochInfoChartLoader } from "../components/charts/EpochInfoChart";
+import { EpochInfo } from "../components/charts/EpochInfoChart";
+import { FaCircleNotch } from "react-icons/fa6";
 
 
 export default function Dashboard() {
-  const [transactions, setTransactions] = useState<TransactionData[]>([]);
-  const [blockInfo, setBlockInfo] = useState(null);
-  const [validatorPerformance, setValidatorPerformance] = useState<{
-    current: ValidatorData[];
-  }>({ current: [] });
-  const [stakingInfo, setStakingInfo] = useState(null);
+  const [epochInfo, setEpochInfo] = useState<EpochInfo | null>(null);
   const [tpsData, setTpsData] = useState<PerformanceSample[]>([]);
-  // const [pingData, setPingData] = useState<PingTimeData[]>([]); // Adjust this if you have the implementation
+  const [circulatingSupply, setCirculatingSupply] = useState<number | null>(null);
+  const [totalSupply, setTotalSupply] = useState<number | null>(null);
+  const [transactionCount, setTransactionCount] = useState<number | null>(null);
+  const [blockHeight, setBlockHeight] = useState<number | null>(null);
 
   useEffect(() => {
     async function fetchData() {
       try {
-        // const blockResponse = await DashboardService.fetchData('getRecentBlockhash');
-        // setBlockInfo(blockResponse);
+        const epochInfoResponse = await DashboardService.fetchEpochInfo();
+        setEpochInfo({
+          epoch: epochInfoResponse.epoch,
+          slotsInEpoch: epochInfoResponse.slotsInEpoch,
+          slotIndex: epochInfoResponse.slotIndex,
+          slotsRemaining: epochInfoResponse.slotsInEpoch - epochInfoResponse.slotIndex,
+        });
 
-        // const validatorResponse = await DashboardService.fetchData('getVoteAccounts');
-        // setValidatorPerformance(validatorResponse);
-
-        // const stakingResponse = await DashboardService.fetchData('getStakeActivation', ["your-stake-account"]);
-        // setStakingInfo(stakingResponse);
-
-        const tpsResponse = await DashboardService.fetchData(
-          "getRecentPerformanceSamples",
-          [30]
-        );
-        console.log(tpsResponse);
+        const tpsResponse = await DashboardService.fetchData("getRecentPerformanceSamples", [30]);
         setTpsData(tpsResponse);
+
+        const supplyResponse = await DashboardService.fetchCirculatingSupply();
+        setCirculatingSupply(supplyResponse.value.circulating / 1e9);
+        setTotalSupply(supplyResponse.value.total / 1e9);
+
+        const transactionCountResponse = await DashboardService.fetchData("getTransactionCount");
+        setTransactionCount(transactionCountResponse);
+
+        const blockHeightResponse = await DashboardService.fetchData("getBlockHeight");
+        setBlockHeight(blockHeightResponse);
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
       }
@@ -47,61 +52,60 @@ export default function Dashboard() {
 
   return (
     <DashboardLayout path="Dashboard">
-      {/* <Card>
-        <h2>Recent Transactions</h2>
-        {transactions.length > 0 ? (
-          <TransactionChart data={transactions} />
-        ) : (
-          "Loading transactions..."
-        )}
-      </Card> */}
-      {/* <Card>
-        <h2>Current Block Information</h2>
-        {blockInfo ? (
-          <div>
-            <p>Block Hash: {blockInfo.blockhash}</p>
-            <p>Last Valid Block Height: {blockInfo.lastValidBlockHeight}</p>
-          </div>
-        ) : (
-          "Loading block information..."
-        )}
-      </Card> */}
-      {/* <Card>
-        <h2>Validator Performance</h2>
-        {validatorPerformance.current.length > 0 ? (
-          <ValidatorChart data={validatorPerformance} />
-        ) : (
-          "Loading validator performance..."
-        )}
-      </Card> */}
       <Card>
-        {tpsData.length > 0 ? (
-          <TPSChart data={tpsData} />
-        ) : (
-          <TPSChartLoader />
-        )}
+        <div className="w-full my-6 between">
+          <MetricCard
+            title="Circulating Supply"
+            value={circulatingSupply}
+            unit="$SOL"
+          />
+          <MetricCard
+            title="Total Supply"
+            value={totalSupply}
+            unit="$SOL"
+          />
+          <MetricCard
+            title="Transaction Count"
+            value={transactionCount}
+            unit=""
+          />
+          <MetricCard
+            title="Block Height"
+            value={blockHeight}
+            unit=""
+          />
+        </div>
+        {tpsData.length > 0 ? <TPSChart data={tpsData} /> : <TPSChartLoader />}
+        <div></div>
+        {epochInfo ? <EpochInfoChart data={epochInfo} /> : <EpochInfoChartLoader />}
       </Card>
-      {/* 
-      <Card>
-        <h2>Ping Time</h2>
-        {pingData.length > 0 ? (
-          <PingTimeChart data={pingData} />
-        ) : (
-          "Loading ping time data..."
-        )}
-      </Card>
-      */}
-      {/* <Card>
-        <h2>Staking Information</h2>
-        {stakingInfo ? (
-          <div>
-            <p>Active Stake: {stakingInfo.active}</p>
-            <p>Inactive Stake: {stakingInfo.inactive}</p>
-          </div>
-        ) : (
-          "Loading staking information..."
-        )}
-      </Card> */}
     </DashboardLayout>
   );
 }
+
+const MetricCard = ({ title, value, unit }: { title: string, value: number | null, unit: string }) => (
+  <div className="flex center w-full flex-col px-6 py-10 rounded-lg card-shadow">
+    {value !== null ? (
+      <div className="flex-col center gap-4 p-3">
+        <FaCircleNotch size={42} />
+        <div className="center flex-col">
+          <p>{title}</p>
+          <h3 className="font-semibold text-xl">
+            {value.toLocaleString()} {unit}
+          </h3>
+        </div>
+      </div>
+    ) : (
+      <LoadingCard />
+    )}
+  </div>
+);
+
+const LoadingCard = () => (
+  <div className="w-[25%] rounded-lg center" style={{ minHeight: "8rem" }}>
+    <div className="animate-pulse w-full gap-6 flex flex-col center">
+      <div className="mt-2 w-20 h-12 bg-gray-200"></div>
+      <div className="bg-gray-200 h-6 w-[80%]"></div>
+    </div>
+  </div>
+);
