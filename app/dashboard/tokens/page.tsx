@@ -3,7 +3,7 @@
 import Card from "../../components/layout/Card";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 
-export default function Home() {
+export default function Tokens() {
   return (
     <DashboardLayout path="Tokens">
       <Card>Hello</Card>

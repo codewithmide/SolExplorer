@@ -1,9 +1,11 @@
-"use client";
-
 import Dashboard from "./dashboard/page";
 
-export default function Home() {
+const Home = () => {
   return (
-    <Dashboard />
+    <main>
+      <Dashboard />
+    </main>
   );
 }
+ 
+export default Home;
