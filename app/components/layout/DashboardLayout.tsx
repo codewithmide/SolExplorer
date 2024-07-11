@@ -19,22 +19,22 @@ const DashboardLayout = ({ children, path }: any) => {
         </div>
       </div>
 
-      <div className="flex justify-start bg-whiteBg dark:bg-darkBg text-white-text dark:text-dark-text p-2 h-[80px]">
-        <div className="w-[17rem] font-semibold flex items-center justify-center">
+      <div className="flex justify-start bg-whiteBg dark:bg-darkBg text-white-text dark:text-dark-text p-2 pr-4 h-[80px]">
+        <div className="w-[17rem] font-semibold text-lg flex items-center justify-center">
           Solana Data Explorer
         </div>
 
-        <div className="w-full px-4 flex items-center justify-between">
+        <div className="w-full px-6 flex items-center justify-between">
           <div>
-            <p className="whitespace-nowrap text-brand text-xl font-semibold">
+            <p className="whitespace-nowrap text-brand text-lg font-semibold">
               {path}
             </p>
-            <p className="whitespace-nowrap dark:text-dark-secondary text-white-primary text-sm font-normal">
+            <p className="whitespace-nowrap text-[#04D192] text-sm font-semibold">
               {formattedDate}
             </p>
           </div>
 
-          <div className="flex gap-4 items-center">
+          <div className="flex gap-6 items-center">
             <ThemeSwitch />
             <FaGithub size={24} />
           </div>

@@ -1,12 +1,9 @@
 "use client";
 
-import Card from "./components/layout/Card";
-import DashboardLayout from "./components/layout/DashboardLayout";
+import Dashboard from "./dashboard/page";
 
 export default function Home() {
   return (
-    <DashboardLayout path="Dashboard">
-      <Card>Hello Dashboard</Card>
-    </DashboardLayout>
+    <Dashboard />
   );
 }

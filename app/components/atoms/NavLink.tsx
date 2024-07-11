@@ -61,12 +61,12 @@ const NavLink = ({ item, index, active, setLinks, links }: any) => {
     <div>
       <div
         key={index}
-        className={`pl-4 py-4 cursor-pointer text-sm mb-2 flex items-start gap-2 rounded-md text-dark ${
+        className={`pl-4 py-3 cursor-pointer text-sm mb-2 flex items-start gap-2 rounded-md text-dark ${
           !item.drop && "hover:bg-background"
         } ${
           active === item.name
-            ? "bg-background text-brand font-semibold"
-            : "text-[#777373]over:bg-hover"
+            ? "bg-background font-semibold"
+            : "text-[#979191]  hover:bg-hover"
         }`}
       >
         {item.sublink && (
