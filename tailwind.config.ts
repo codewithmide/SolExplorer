@@ -13,7 +13,7 @@ const config: Config = {
         "white-primary": "#007bff",
         "white-secondary": "#ffc107",
         "white-text": "#333",
-        darkBg: "#212529",
+        darkBg: "#182F47",
         "dark-primary": "#007bff",
         "dark-secondary": "#ffc107",
         "dark-text": "#fff",
