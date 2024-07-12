@@ -1,9 +1,13 @@
 "use client";
 
 import SideNav from "../SideNav";
-import formattedDate from "@/app/common/utils/current-date";
 import { FaGithub, FaMoon, FaSun } from "react-icons/fa";
 import ThemeSwitch from "../ThemeSwitch";
+import Link from "next/link";
+import { Input } from "../molecules/FormComponents";
+import searchIcon from "@/public/svgs/search.svg";
+import LogoIcon from "@/public/svgs/logoIcon.svg";
+import Image from "next/image";
 
 const DashboardLayout = ({ children, path }: any) => {
   return (
@@ -19,26 +23,20 @@ const DashboardLayout = ({ children, path }: any) => {
         </div>
       </div>
 
-      <div className="flex justify-start bg-whiteBg dark:bg-darkBg text-white-text dark:text-dark-text p-2 pr-4 h-[80px]">
-        <div className="w-[17rem] font-semibold text-lg flex items-center justify-center">
-          Solana Data Explorer
-          {/* <Image src="/svgs/logo.svg" alt="logo" width={135} height={20}/> */}
-        </div>
+      <div className="between border-b border-[#E5E7EB] dark:border-[#374151]  bg-whiteBg dark:bg-darkBg text-white-text dark:text-dark-text px-5 h-[80px]">
+        <Link
+          href="/"
+          className="font-semibold text-teal dark:text-dark-text text-lg flex gap-1 items-center justify-center"
+        >
+          <Image src={LogoIcon} alt="logo" width={24} height={24}/>
+          SolExplore
+        </Link>
 
-        <div className="w-full px-6 flex items-center justify-between">
-          <div>
-            <p className="whitespace-nowrap text-brand text-lg font-semibold">
-              {path}
-            </p>
-            <p className="whitespace-nowrap text-[#04D192] text-sm font-semibold">
-              {formattedDate}
-            </p>
-          </div>
+        <Input preIcon={searchIcon} onChange={() => console.log("search")} placeholder="Search transactions, tokens, blocks..." classname="w-[450px] border border-[#D1D5DB] dark:border-[#4B5563] rounded-[8px]" />
 
-          <div className="flex gap-6 items-center">
-            <ThemeSwitch />
-            <FaGithub size={24} />
-          </div>
+        <div className="flex gap-6 items-center">
+          <ThemeSwitch />
+          <FaGithub size={24} />
         </div>
       </div>
 
@@ -47,10 +45,7 @@ const DashboardLayout = ({ children, path }: any) => {
         style={{ height: "calc(100vh - 80px" }}
       >
         <SideNav active={path} />
-        <div
-          className=" bg-background w-full overflow-y-scroll"
-          
-        >
+        <div className="bg-background w-full overflow-y-scroll">
           {children}
         </div>
       </main>

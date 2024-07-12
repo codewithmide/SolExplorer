@@ -93,7 +93,7 @@ export const Input = ({ classname, label, name, value, onChange, placeholder, ty
         <div className={classnames('flex flex-col gap-2 ', classname)}>
             {label && <small className='text-sm font-medium text-dark'>{label}</small>}
 
-            <div className='flex items-center input-wrapper outline-2 outline-transparent text-base border rounded-lg border-outline focus:outline-none focus:border-brand bg-transparent '>
+            <div className='flex items-center input-wrapper outline-none text-sm bg-[#F9FAFB] dark:bg-[#374151]  rounded-lg focus:outline-none '>
                 {
                     preIcon
                     && <Image className="h-4 w-4 ml-3" src={preIcon} alt="" />

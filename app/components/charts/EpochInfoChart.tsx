@@ -80,11 +80,11 @@ export const EpochInfoChart: React.FC<EpochInfoChartProps> = ({ data }) => {
   ];
 
   return (
-    <div id="chart" className="text-white-text dark:text-dark-text">
-      <div className="flex items-start gap-2">
-        <h2 className="font-semibold">Current Epoch Info</h2>
-        <div className="tooltip">
-          <IoMdInformationCircle />
+    <div id="chart" className="text-white-text border border-[#E5E7EB] rounded-lg dark:border-[#374151] p-8 dark:text-dark-text">
+      <div className="flex border-b border-[#E5E7EB] dark:border-[#374151]  pb-6 mb-6 items-start gap-2">
+        <h2 className="font-semibold text-xl">Current Epoch Info</h2>
+        <div className="tooltip my-auto">
+          <IoMdInformationCircle size={24} />
           <span className="tooltiptext">
             Epochs help organize the validation process and allow for the
             regular reconfiguration of the network, including the rotation of
