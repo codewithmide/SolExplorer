@@ -9,14 +9,15 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        whiteBg: "#f5f5f5",
+        whiteBg: "#FFFFFF",
         "white-primary": "#007bff",
         "white-secondary": "#ffc107",
         "white-text": "#333",
-        darkBg: "#182F47",
+        darkBg: "#1F2A37",
         "dark-primary": "#007bff",
         "dark-secondary": "#ffc107",
         "dark-text": "#fff",
+        teal: "#047481",
         overlay: "#00000033",
         success: "#027A48",
         "success-secondary": "#ECFDF3",

@@ -47,14 +47,16 @@ body {
   background-color: black;
   color: #fff;
   text-align: center;
-  padding: 6px 0;
+  padding: 6px;
   border-radius: 6px;
   position: absolute;
   z-index: 1;
-  top: -30px;
+  top: -40px;
+  left: 25px;
   font-size: smaller;
 }
 
 .tooltip:hover .tooltiptext {
   visibility: visible;
 }
+

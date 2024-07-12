@@ -1,10 +1,10 @@
 import React from "react";
 import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
-import { IoMdInformationCircle } from "react-icons/io";
 
 export interface PerformanceSample {
   numTransactions: number;
+  numNonVoteTransactions: number;
   samplePeriodSecs: number;
   slot: number;
 }
@@ -15,8 +15,13 @@ interface TPSChartProps {
 
 export const TPSChart: React.FC<TPSChartProps> = ({ data }) => {
   const tpsData = data.map((sample) => ({
-    tps: Math.round(sample.numTransactions),
+    numTransactions: Math.round(sample.numTransactions),
+    numNonVoteTransactions: Math.round(sample.numNonVoteTransactions),
   }));
+
+  const ratios = data.map((sample) => (
+    (sample.numNonVoteTransactions / sample.numTransactions).toFixed(2)
+  ));
 
   const chartOptions: ApexOptions = {
     chart: {
@@ -25,12 +30,16 @@ export const TPSChart: React.FC<TPSChartProps> = ({ data }) => {
       toolbar: {
         show: false,
       },
+      stacked: true,
     },
     xaxis: {
+      categories: ratios,
       labels: {
-        show: false,
         style: {
           colors: "var(--text-color)",
+        },
+        formatter: function (val: string) {
+          return `${val}`;
         },
       },
       axisBorder: {
@@ -52,15 +61,8 @@ export const TPSChart: React.FC<TPSChartProps> = ({ data }) => {
     },
     plotOptions: {
       bar: {
-        colors: {
-          ranges: [
-            {
-              from: 0,
-              to: 10000,
-              color: "#04D192",
-            },
-          ],
-        },
+        columnWidth: "70%",
+        borderRadius: 6,
       },
     },
     dataLabels: {
@@ -75,37 +77,53 @@ export const TPSChart: React.FC<TPSChartProps> = ({ data }) => {
         fontSize: "12px",
       },
       y: {
-        formatter: function (val) {
-          return `TPS: ${val}`;
+        formatter: function (val, { seriesIndex }) {
+          return seriesIndex === 0
+            ? `Non-Vote Transactions: ${val}`
+            : `Transactions: ${val}`;
         },
         title: {
           formatter: () => "",
         },
       },
     },
+    colors: ["#FDBA8C", "#16BDCA"],
+    legend: {
+      show: false,
+    },
   };
 
   const chartSeries = [
     {
-      name: "TPS",
-      data: tpsData.map((d) => d.tps),
+      name: "Non-Vote TPS",
+      data: tpsData.map((d) => d.numNonVoteTransactions),
+    },
+    {
+      name: "True TPS",
+      data: tpsData.map((d) => d.numTransactions),
     },
   ];
 
   return (
-    <div id="chart" className="text-white-text mb-6 dark:text-dark-text">
-      <div className="flex items-start gap-2">
-        <h2 className="font-semibold">TPS (Transactions Per Second)</h2>
+    <div id="chart" className="text-white-text border border-[#E5E7EB] rounded-lg dark:border-[#374151] p-8 dark:text-dark-text">
+      <div className="flex border-b border-[#E5E7EB] dark:border-[#374151]  pb-6 mb-6 items-start gap-2">
+        <h2 className="font-semibold text-xl">TPS (Transactions Per Second)</h2>
       </div>
-      <Chart
-        options={chartOptions}
-        series={chartSeries}
-        type="bar"
-        height={350}
-      />
+      <Chart options={chartOptions} series={chartSeries} type="bar" height={400} />
+      <div className="flex justify-center gap-4 mt-2 pt-5 border-t border-[#E5E7EB] dark:border-[#374151]">
+        <div className="flex items-center gap-2">
+          <div className="bg-[#FDBA8C] w-3 h-3 rounded-full"></div>
+          <p className="text-sm">Non-Vote TPS</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="bg-[#16BDCA] w-3 h-3 rounded-full"></div>
+          <p className="text-sm">True TPS</p>
+        </div>
+      </div>
     </div>
   );
 };
+
 
 export const TPSChartLoader = () => {
   return (
