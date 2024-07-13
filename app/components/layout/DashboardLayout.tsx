@@ -19,11 +19,11 @@ const DashboardLayout = ({ children, path }: any) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchTerm(value);
     if (value.length > 0) {
-      identifySearchType(value);
+      await identifySearchType(value);
     } else {
       setSearchResult(null);
     }
@@ -31,7 +31,7 @@ const DashboardLayout = ({ children, path }: any) => {
 
   const identifySearchType = async (value: string) => {
     setIsLoading(true);
-    const transactionPattern = /^[1-9A-HJ-NP-Za-km-z]{88}$/;
+    const transactionPattern = /^[1-9A-HJ-NP-Za-km-z]{87,88}$/;
     const blockPattern = /^\d+$/;
     const accountPattern = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
 
@@ -53,23 +53,23 @@ const DashboardLayout = ({ children, path }: any) => {
             if (programInfo && programInfo.length > 0) {
               setSearchResult({ type: "Program", value });
             } else {
-              setSearchResult(null);
+              setSearchResult({ type: "Invalid", value: "Invalid or incorrect address" });
             }
           }
         }
       } else {
-        setSearchResult(null);
+        setSearchResult({ type: "Invalid", value: "Invalid or incorrect address" });
       }
     } catch (error) {
       console.error("Error identifying search type:", error);
-      setSearchResult(null);
+      setSearchResult({ type: "Invalid", value: "Invalid or incorrect address" });
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleResultClick = () => {
-    if (searchResult) {
+    if (searchResult && searchResult.type !== "Invalid") {
       const { type, value } = searchResult;
       const path = `/dashboard/${type.toLowerCase()}/${value}`;
       router.push(path);

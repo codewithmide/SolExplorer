@@ -20,6 +20,7 @@ export default function SingleAccount() {
   const [transactions, setTransactions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<any>(null);
+  const [copySuccess, setCopySuccess] = useState<string>("");
 
   const balanceInSol = accountData?.lamports / LAMPORTS_PER_SOL;
 
@@ -65,6 +66,13 @@ export default function SingleAccount() {
     }
   };
 
+  const handleCopy = () => {
+    navigator.clipboard.writeText(String(account)).then(() => {
+      setCopySuccess("Copied!");
+      setTimeout(() => setCopySuccess(""), 2000); // Hide after 2 seconds
+    });
+  };
+
   if (error) {
     return (
       <DashboardLayout path={`Accounts`}>
@@ -103,10 +111,11 @@ export default function SingleAccount() {
             </div>
           </div>
         ) : (
-          <div className="px-6 pb-6 center flex-col bg-[#F9FAFB] dark:bg-[#111928]">
-            <div className="w-full p-4 border border-[#E5E7EB] dark:border-[#374151] flex gap-4 items-start bg-whiteBg dark:bg-darkBg  mt-5">
+          <div className="px-6 h-full pb-6 flex flex-col bg-[#F9FAFB] dark:bg-[#111928]">
+            <div className="w-full p-4 border border-[#E5E7EB] dark:border-[#374151] flex gap-4 items-start bg-whiteBg dark:bg-darkBg mt-5">
               <p className="text-sm">{account}</p>
-              <FaRegCopy size={12} className="my-auto cursor-pointer" />
+              <FaRegCopy size={12} className="my-auto cursor-pointer" onClick={handleCopy} />
+              {copySuccess && <span className="text-green-500 text-sm">{copySuccess}</span>}
             </div>
             <div className="w-full my-6 between">
               <OverviewCard
@@ -125,7 +134,7 @@ export default function SingleAccount() {
               />
             </div>
             <div className="w-full border flex-col p-6 gap-10 border-[#E5E7EB] dark:border-[#374151] flex items-start bg-whiteBg dark:bg-darkBg">
-              <h2 className="font-semibold text-xl">Last 5 Transactions</h2>
+              <h2 className="font-semibold text-xl">Recent Transactions</h2>
               <TxnTable data={transactions} />
             </div>
           </div>

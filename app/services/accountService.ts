@@ -32,4 +32,8 @@ export default class AccountService {
       { maxSupportedTransactionVersion: 0 }
     ]);
   }
+
+  static async requestAirdrop(address: string, lamports: number) {
+    return this.fetchData("requestAirdrop", [address, lamports]);
+  }
 }

@@ -9,6 +9,6 @@ export interface ValidatorData {
 }
 
 export type SearchResult = {
-    type: "Account" | "Transaction" | "Block" | "Program" | "Token";
+    type: "Account" | "Transaction" | "Block" | "Program" | "Token" | "Invalid";
     value: string;
 } | null;
