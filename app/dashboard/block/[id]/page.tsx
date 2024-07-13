@@ -7,9 +7,7 @@ import DashboardLayout from "../../../components/layout/DashboardLayout";
 import AccountService from "@/app/services/accountService";
 import { FaRegCopy } from "react-icons/fa";
 import { LoadingCard } from "@/app/components/molecules/LoadingCard";
-import OverviewCard from "../../account/component/overviewCard";
 import SolanaLogo from "@/public/icons/solana.png";
-import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { MetricCard } from "@/app/components/molecules/MetricCard";
 import BlockTable from "../components/blockTable";
 
@@ -20,6 +18,7 @@ export default function SingleBlock() {
   const [blockData, setBlockData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<any>(null);
+  const [copySuccess, setCopySuccess] = useState<string>("");
 
   useEffect(() => {
     if (blockSlot) {
@@ -37,6 +36,13 @@ export default function SingleBlock() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(String(blockSlot)).then(() => {
+      setCopySuccess("Copied!");
+      setTimeout(() => setCopySuccess(""), 2000); // Hide after 2 seconds
+    });
   };
 
   if (error) {
@@ -80,7 +86,8 @@ export default function SingleBlock() {
           <div className="px-6 pb-6 center flex-col bg-[#F9FAFB] dark:bg-[#111928]">
             <div className="w-full p-4 border border-[#E5E7EB] dark:border-[#374151] flex gap-4 items-start bg-whiteBg dark:bg-darkBg  mt-5">
               <p className="text-sm">{blockSlot}</p>
-              <FaRegCopy size={12} className="my-auto cursor-pointer" />
+              <FaRegCopy size={12} className="my-auto cursor-pointer" onClick={handleCopy} />
+              {copySuccess && <span className="text-green-500 text-sm">{copySuccess}</span>}
             </div>
             <div className="w-full my-6 between">
               <MetricCard
