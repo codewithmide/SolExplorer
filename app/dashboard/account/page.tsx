@@ -6,7 +6,11 @@ import DashboardLayout from "../../components/layout/DashboardLayout";
 export default function Accounts() {
   return (
     <DashboardLayout path="Accounts">
-      <Card>Hello Accounts</Card>
+      <Card>
+        <div className="w-full h-full center">
+          Search for an account to see more information here
+        </div>
+      </Card>
     </DashboardLayout>
   );
 }

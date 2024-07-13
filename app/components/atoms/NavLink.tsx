@@ -60,7 +60,7 @@ const NavLink = ({ item, index, active, setLinks, links }: any) => {
             <Image
               src={item.icon}
               alt="icon"
-              className={`${active === item.name ? 'svg-active' : ''}`}
+              className={`${active === item.name ? "svg-active" : ""}`}
               width={20}
               height={20}
             />
@@ -79,8 +79,8 @@ const NavLink = ({ item, index, active, setLinks, links }: any) => {
                   onClick={() => handleSubLinkClick(navItem)}
                   className={`cursor-pointer text-sm mb-2 px-4 py-3 rounded-md hover:bg-background ${
                     active === navItem
-                      ? "bg-background text-brand font-semibold"
-                      : "text-[#777373] hover:bg-hover"
+                      ? "bg-[#EDFAFA] dark:bg-[#05505C] border border-[#D5F5F6] dark:border-[#036672] text-[#047481] dark:text-white font-semibold"
+                      : "text-[#111928] dark:text-white hover:bg-[#D5F5F6] dark:hover:bg-[#036672]"
                   }`}
                 >
                   <Link className="whitespace-nowrap" href={navItem}>

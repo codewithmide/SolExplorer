@@ -1,21 +1,69 @@
 "use client";
 
+import { useState } from "react";
 import SideNav from "../SideNav";
-import { FaGithub, FaMoon, FaSun } from "react-icons/fa";
+import { FaGithub } from "react-icons/fa";
 import ThemeSwitch from "../ThemeSwitch";
 import Link from "next/link";
 import { Input } from "../molecules/FormComponents";
 import searchIcon from "@/public/svgs/search.svg";
 import LogoIcon from "@/public/svgs/logoIcon.svg";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { SearchResult } from "@/app/common/types/dashboardTypes";
 
 const DashboardLayout = ({ children, path }: any) => {
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [searchResult, setSearchResult] = useState<SearchResult>(null);
+  const router = useRouter();
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    if (value.length > 0) {
+      identifySearchType(value);
+    } else {
+      setSearchResult(null);
+    }
+  };
+
+  const identifySearchType = (value: string) => {
+    // Simple regex patterns to identify the type of search
+    const accountPattern = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/; // Solana account address pattern
+    const transactionPattern = /^[1-9A-HJ-NP-Za-km-z]{88}$/; // Solana transaction signature pattern
+    const blockPattern = /^\d+$/; // Block number pattern
+    const programPattern = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/; // Solana program address pattern
+    const tokenPattern = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
+
+    if (accountPattern.test(value)) {
+      setSearchResult({ type: "Account", value });
+    } else if (transactionPattern.test(value)) {
+      setSearchResult({ type: "Transaction", value });
+    } else if (blockPattern.test(value)) {
+      setSearchResult({ type: "Block", value });
+    } else if (programPattern.test(value)) {
+      setSearchResult({ type: "Program", value });
+    } else if (tokenPattern.test(value)) {
+      setSearchResult({ type: "Token", value });
+    } else {
+      setSearchResult(null);
+    }
+  };
+
+  const handleResultClick = () => {
+    if (searchResult) {
+      const { type, value } = searchResult;
+      const path = `/dashboard/${type.toLowerCase()}/${value}`;
+      router.push(path);
+    }
+  };
+
   return (
     <main className="h-[100%] overflow-hidden flex flex-col text-[#000000] relative">
       <div className="md:hidden h-full w-full absolute bg-white dark:bg-slate-800 text-black dark:text-white z-50 flex items-center justify-center">
         <div className="px-4">
           <h1 className="text-xl lg:text-2xl font-bold text-action mb-2">
-            Mobile Devices Not Supported for Dashboard
+            Mobile view coming soon
           </h1>
           <p className="text-base lg:text-xl max-w-xs">
             For Best experience, use a desktop device
@@ -23,16 +71,37 @@ const DashboardLayout = ({ children, path }: any) => {
         </div>
       </div>
 
-      <div className="between border-b border-[#E5E7EB] dark:border-[#374151]  bg-whiteBg dark:bg-darkBg text-white-text dark:text-dark-text px-5 h-[80px]">
+      <div className="between border-b border-[#E5E7EB] dark:border-[#374151] bg-whiteBg dark:bg-darkBg text-white-text dark:text-dark-text px-5 h-[80px]">
         <Link
           href="/"
           className="font-semibold text-teal dark:text-dark-text text-lg flex gap-1 items-center justify-center"
         >
-          <Image src={LogoIcon} alt="logo" width={24} height={24}/>
+          <Image src={LogoIcon} alt="logo" width={24} height={24} />
           SolExplore
         </Link>
 
-        <Input preIcon={searchIcon} onChange={() => console.log("search")} placeholder="Search transactions, tokens, blocks..." classname="w-[450px] border border-[#D1D5DB] dark:border-[#4B5563] rounded-[8px]" />
+        <div className="relative">
+          <Input
+            preIcon={searchIcon}
+            onChange={handleSearchChange}
+            value={searchTerm}
+            placeholder="Search transactions, account, tokens, blocks..."
+            classname="w-[450px] border border-[#D1D5DB] dark:border-[#4B5563] rounded-[8px]"
+          />
+          {searchResult && (
+            <div
+              className="absolute top-full left-1/2 transform -translate-x-1/2 min-w-[450px] bg-white dark:bg-slate-800 border border-[#D1D5DB] dark:border-[#4B5563] rounded-[8px] mt-1 p-4 cursor-pointer"
+              onClick={handleResultClick}
+            >
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                {searchResult.type}
+              </p>
+              <p className="text-md text-black dark:text-white">
+                {searchResult.value}
+              </p>
+            </div>
+          )}
+        </div>
 
         <div className="flex gap-6 items-center">
           <ThemeSwitch />
@@ -42,12 +111,10 @@ const DashboardLayout = ({ children, path }: any) => {
 
       <main
         className="w-full bg-background flex flex-row"
-        style={{ height: "calc(100vh - 80px" }}
+        style={{ height: "calc(100vh - 80px)" }}
       >
         <SideNav active={path} />
-        <div className="bg-background w-full overflow-y-scroll">
-          {children}
-        </div>
+        <div className="bg-background w-full overflow-y-scroll">{children}</div>
       </main>
     </main>
   );

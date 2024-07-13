@@ -8,7 +8,6 @@ import ValidatorIconInactive from "@/public/svgs/validatorIconInactive.svg";
 import TokenIconInactive from "@/public/svgs/tokenIconInactive.svg";
 import DevIconInactive from "@/public/svgs/devIconInactive.svg";
 import DefiIconInactive from "@/public/svgs/defiIconInactive.svg";
-import NetworkIconInactive from "@/public/svgs/networkIconInactive.svg";
 import SolanaLogo from "@/public/icons/solana.png";
 import NavLink from "./atoms/NavLink";
 import { useState } from "react";
@@ -23,36 +22,33 @@ const navLinks = [
   },
   {
     id: 2,
-    name: "Transactions",
-    link: "/dashboard/transactions",
-    icon: TransactionIconInactive,
+    name: "Accounts",
+    link: "/dashboard/account",
+    icon: AccountIconInactive,
   },
   {
     id: 3,
-    name: "Blocks",
-    link: "/dashboard/blocks",
-    icon: BlockIconInactive,
-    drop: false,
+    name: "Transactions",
+    link: "/dashboard/transaction",
+    icon: TransactionIconInactive,
   },
   {
     id: 4,
-    name: "Accounts",
-    link: "/dashboard/accounts",
-    icon: AccountIconInactive,
-    drop: false,
+    name: "Programs",
+    link: "/dashboard/program",
+    icon: ValidatorIconInactive,
   },
   {
     id: 5,
-    name: "Validators",
-    link: "/dashboard/validators",
-    icon: ValidatorIconInactive,
-    drop: false,
+    name: "Tokens",
+    link: "/dashboard/token",
+    icon: TokenIconInactive,
   },
   {
     id: 6,
-    name: "Tokens",
-    link: "/dashboard/tokens",
-    icon: TokenIconInactive,
+    name: "Blocks",
+    link: "/dashboard/block",
+    icon: BlockIconInactive,
   },
   {
     id: 7,
@@ -62,12 +58,6 @@ const navLinks = [
   },
   {
     id: 8,
-    name: "Network",
-    link: "/dashboard/network",
-    icon: NetworkIconInactive,
-  },
-  {
-    id: 9,
     name: "Developer Tools",
     link: "/dashboard/developer-tools",
     icon: DevIconInactive,
