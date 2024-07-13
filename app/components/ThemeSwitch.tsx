@@ -25,10 +25,10 @@ export default function ThemeSwitch() {
     );
 
   if (resolvedTheme === "dark") {
-    return <FiSun size={24} onClick={() => setTheme("light")} suppressHydrationWarning/>;
+    return <FiSun size={24} onClick={() => setTheme("light")} suppressHydrationWarning className="cursor-pointer" />;
   }
 
   if (resolvedTheme === "light") {
-    return <FiMoon size={24} onClick={() => setTheme("dark")} suppressHydrationWarning />;
+    return <FiMoon size={24} onClick={() => setTheme("dark")} suppressHydrationWarning className="cursor-pointer" />;
   }
 }

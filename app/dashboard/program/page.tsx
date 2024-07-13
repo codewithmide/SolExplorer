@@ -5,7 +5,7 @@ import DashboardLayout from "../../components/layout/DashboardLayout";
 
 export default function Validators() {
   return (
-    <DashboardLayout path="Validators">
+    <DashboardLayout path="Programs">
       <Card>
         <div className="w-full h-full center">
           Search for a program to see more information here

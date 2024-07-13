@@ -33,22 +33,16 @@ const navLinks = [
     icon: TransactionIconInactive,
   },
   {
-    id: 4,
-    name: "Programs",
-    link: "/dashboard/program",
-    icon: ValidatorIconInactive,
-  },
-  {
     id: 5,
-    name: "Tokens",
-    link: "/dashboard/token",
-    icon: TokenIconInactive,
-  },
-  {
-    id: 6,
     name: "Blocks",
     link: "/dashboard/block",
     icon: BlockIconInactive,
+  },
+  {
+    id: 6,
+    name: "Tokens",
+    link: "/dashboard/token",
+    icon: TokenIconInactive,
   },
   {
     id: 7,
