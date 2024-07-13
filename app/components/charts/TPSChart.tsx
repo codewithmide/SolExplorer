@@ -127,7 +127,7 @@ export const TPSChart: React.FC<TPSChartProps> = ({ data }) => {
 
 export const TPSChartLoader = () => {
   return (
-    <div className="w-full h-[350px] flex items-end justify-between px-5">
+    <div className="w-full h-[350px] pb-10 flex items-end justify-between px-5">
       <div className="bg-gray-200 h-[80%] w-[27px] animate-pulse"></div>
       <div className="bg-gray-200 h-[60%] w-[27px] animate-pulse"></div>
       <div className="bg-gray-200 h-[50%] w-[27px] animate-pulse"></div>

@@ -19,12 +19,11 @@ export const MetricCard = ({
           <Image src={icon} alt="title" width={32} height={32} />
         </div>
         <div>
-          <p className="font-light">{title} {unit}</p>
-          <h3 className="font-bold text-[30px]">
-            {value.toLocaleString()}
-          </h3>
+          <p className="font-light">
+            {title} {unit}
+          </p>
+          <h3 className="font-bold text-[30px]">{value.toLocaleString()}</h3>
         </div>
-        
       </div>
     ) : (
       <LoadingCard />
