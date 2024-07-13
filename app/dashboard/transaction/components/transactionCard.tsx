@@ -11,7 +11,7 @@ export const TransactionCard = ({
   status?: string;
   statusStyle?: string;
 }) => (
-  <div className="flex min-w-[24%] min-h-[200px] border border-[#E5E7EB] dark:border-[#374151] flex-col rounded-lg bg-whiteBg dark:bg-darkBg">
+  <div className="flex min-w-[23%] min-h-[200px] border border-[#E5E7EB] dark:border-[#374151] flex-col rounded-lg bg-whiteBg dark:bg-darkBg">
     {value !== null ? (
       <div className="flex-col w-full h-full my-auto items-start justify-center flex p-5 gap-3">
         <div className="my-auto">

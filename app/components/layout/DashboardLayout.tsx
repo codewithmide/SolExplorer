@@ -11,10 +11,12 @@ import LogoIcon from "@/public/svgs/logoIcon.svg";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { SearchResult } from "@/app/common/types/dashboardTypes";
+import AccountService from "@/app/services/accountService";
 
 const DashboardLayout = ({ children, path }: any) => {
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [searchResult, setSearchResult] = useState<SearchResult>(null);
+  const [searchResult, setSearchResult] = useState<SearchResult | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,26 +29,42 @@ const DashboardLayout = ({ children, path }: any) => {
     }
   };
 
-  const identifySearchType = (value: string) => {
-    // Simple regex patterns to identify the type of search
-    const accountPattern = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/; // Solana account address pattern
-    const transactionPattern = /^[1-9A-HJ-NP-Za-km-z]{88}$/; // Solana transaction signature pattern
-    const blockPattern = /^\d+$/; // Block number pattern
-    const programPattern = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/; // Solana program address pattern
-    const tokenPattern = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
+  const identifySearchType = async (value: string) => {
+    setIsLoading(true);
+    const transactionPattern = /^[1-9A-HJ-NP-Za-km-z]{88}$/;
+    const blockPattern = /^\d+$/;
+    const accountPattern = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
 
-    if (accountPattern.test(value)) {
-      setSearchResult({ type: "Account", value });
-    } else if (transactionPattern.test(value)) {
-      setSearchResult({ type: "Transaction", value });
-    } else if (blockPattern.test(value)) {
-      setSearchResult({ type: "Block", value });
-    } else if (programPattern.test(value)) {
-      setSearchResult({ type: "Program", value });
-    } else if (tokenPattern.test(value)) {
-      setSearchResult({ type: "Token", value });
-    } else {
+    try {
+      if (blockPattern.test(value)) {
+        setSearchResult({ type: "Block", value });
+      } else if (transactionPattern.test(value)) {
+        setSearchResult({ type: "Transaction", value });
+      } else if (accountPattern.test(value)) {
+        const accountInfo = await AccountService.fetchData("getAccountInfo", [value]);
+        if (accountInfo && accountInfo.value !== null) {
+          setSearchResult({ type: "Account", value });
+        } else {
+          const tokenInfo = await AccountService.fetchData("getTokenAccountsByOwner", [value, { programId: "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA" }]);
+          if (tokenInfo && tokenInfo.length > 0) {
+            setSearchResult({ type: "Token", value });
+          } else {
+            const programInfo = await AccountService.fetchData("getProgramAccounts", [value]);
+            if (programInfo && programInfo.length > 0) {
+              setSearchResult({ type: "Program", value });
+            } else {
+              setSearchResult(null);
+            }
+          }
+        }
+      } else {
+        setSearchResult(null);
+      }
+    } catch (error) {
+      console.error("Error identifying search type:", error);
       setSearchResult(null);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -88,18 +106,27 @@ const DashboardLayout = ({ children, path }: any) => {
             placeholder="Search transactions, account, tokens, blocks..."
             classname="w-[450px] border border-[#D1D5DB] dark:border-[#4B5563] rounded-[8px]"
           />
-          {searchResult && (
-            <div
-              className="absolute top-full left-1/2 transform -translate-x-1/2 min-w-[450px] bg-white dark:bg-slate-800 border border-[#D1D5DB] dark:border-[#4B5563] rounded-[8px] mt-1 p-4 cursor-pointer"
-              onClick={handleResultClick}
-            >
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                {searchResult.type}
-              </p>
-              <p className="text-md text-black dark:text-white">
-                {searchResult.value}
-              </p>
+          {isLoading ? (
+            <div className="absolute top-full left-1/2 transform -translate-x-1/2 min-w-[450px] bg-white dark:bg-slate-800 border border-[#D1D5DB] dark:border-[#4B5563] rounded-[8px] mt-1 p-4 cursor-pointer">
+              <div className="animate-pulse">
+                <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded"></div>
+                <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded mt-2"></div>
+              </div>
             </div>
+          ) : (
+            searchResult && (
+              <div
+                className="absolute top-full left-1/2 transform -translate-x-1/2 min-w-[450px] bg-white dark:bg-slate-800 border border-[#D1D5DB] dark:border-[#4B5563] rounded-[8px] mt-1 p-4 cursor-pointer"
+                onClick={handleResultClick}
+              >
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  {searchResult.type}
+                </p>
+                <p className="text-md text-black dark:text-white">
+                  {searchResult.value}
+                </p>
+              </div>
+            )
           )}
         </div>
 

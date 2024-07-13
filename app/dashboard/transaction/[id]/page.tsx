@@ -128,7 +128,7 @@ export default function SingleTransaction() {
           </div>
         ) : (
           <div className="px-6 pb-6 center flex-col gap-5 bg-[#F9FAFB] dark:bg-[#111928]">
-            <div className="p-3 border border-[#E5E7EB] dark:border-[#374151] bg-white w-full mt-5">
+            <div className="p-3  border border-[#E5E7EB] dark:border-[#374151] bg-white dark:bg-darkBg w-full mt-5">
               <div className="w-[60%] animate-pulse bg-slate-200 p-2"></div>
             </div>
             <div className="between w-full">
@@ -137,7 +137,7 @@ export default function SingleTransaction() {
               <LoadingCard />
               <LoadingCard />
             </div>
-            <div className="p-5 center gap-5 flex-col border border-[#E5E7EB] dark:border-[#374151] bg-white w-full divide-[#E5E7EB] rounded-lg dark:divide-[#374151] divide-y-[1px]">
+            <div className="p-5 center gap-5 flex-col border border-[#E5E7EB] dark:border-[#374151] bg-white dark:bg-darkBg w-full divide-[#E5E7EB] rounded-lg dark:divide-[#374151] divide-y-[1px]">
               <div className="w-full py-4 animate-pulse bg-slate-200 p-2"></div>
               <div className="w-full py-4 animate-pulse bg-slate-200 p-2"></div>
               <div className="w-full py-4 animate-pulse bg-slate-200 p-2"></div>

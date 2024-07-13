@@ -5,61 +5,35 @@ import { useEffect, useState } from "react";
 import Card from "../../../components/layout/Card";
 import DashboardLayout from "../../../components/layout/DashboardLayout";
 import AccountService from "@/app/services/accountService";
-import { LAMPORTS_PER_SOL } from "@solana/web3.js";
-import OverviewCard from "../component/overviewCard";
-import SolanaLogo from "@/public/svgs/SOL.png";
 import { FaRegCopy } from "react-icons/fa";
-import TxnTable from "../component/txnTable";
 import { LoadingCard } from "@/app/components/molecules/LoadingCard";
+import OverviewCard from "../../account/component/overviewCard";
+import SolanaLogo from "@/public/icons/solana.png";
+import { LAMPORTS_PER_SOL } from "@solana/web3.js";
+import { MetricCard } from "@/app/components/molecules/MetricCard";
+import BlockTable from "../components/blockTable";
 
-export default function SingleAccount() {
+export default function SingleBlock() {
   const param = useParams();
-  const account = param.id;
+  const blockSlot = param.id;
 
-  const [accountData, setAccountData] = useState<any>(null);
-  const [transactions, setTransactions] = useState<any[]>([]);
+  const [blockData, setBlockData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<any>(null);
 
-  const balanceInSol = accountData?.lamports / LAMPORTS_PER_SOL;
-
   useEffect(() => {
-    if (account) {
-      fetchAccountData(account as string);
-      fetchAccountTransactions(account as string);
+    if (blockSlot) {
+      fetchBlockData(blockSlot as string);
     }
-  }, [account]);
+  }, [blockSlot]);
 
-  const fetchAccountData = async (account: string) => {
+  const fetchBlockData = async (slot: string) => {
     try {
-      const accountInfoResponse = await AccountService.fetchData(
-        "getAccountInfo",
-        [account]
-      );
-      setAccountData(accountInfoResponse.value);
+      const blockInfoResponse = await AccountService.fetchData("getBlock", [parseInt(slot), { maxSupportedTransactionVersion: 0 }]);
+      setBlockData(blockInfoResponse);
     } catch (error: any) {
-      console.error("Error fetching account data:", error);
-      setError("Error fetching account data");
-    }
-  };
-
-  const fetchAccountTransactions = async (account: string) => {
-    try {
-      const signaturesResponse = await AccountService.getTransactionSignatures(
-        account
-      );
-      const signatures = signaturesResponse.map((sig: any) => sig.signature);
-
-      const transactionDetails = await Promise.all(
-        signatures.map(async (signature: string) => {
-          return await AccountService.getTransactionDetails(signature);
-        })
-      );
-
-      setTransactions(transactionDetails);
-    } catch (error: any) {
-      console.error("Error fetching account transactions:", error);
-      // setError("Error fetching account transactions");
+      console.error("Error fetching block data:", error);
+      setError("Error fetching block data");
     } finally {
       setLoading(false);
     }
@@ -67,10 +41,10 @@ export default function SingleAccount() {
 
   if (error) {
     return (
-      <DashboardLayout path={`Accounts`}>
+      <DashboardLayout path={`Blocks`}>
         <Card>
           <h3 className="text-xl px-5 py-5 w-full bg-whiteBg dark:bg-darkBg leading-[25px] font-semibold">
-            Account Overview
+            Block Overview
           </h3>
           <p className="text-red-500 w-full h-full flex items-start justify-center">{error}</p>
         </Card>
@@ -79,14 +53,14 @@ export default function SingleAccount() {
   }
 
   return (
-    <DashboardLayout path={`Accounts`}>
+    <DashboardLayout path={`Blocks`}>
       <Card>
         <h3 className="text-xl px-5 py-5 w-full bg-whiteBg dark:bg-darkBg leading-[25px] font-semibold">
-          Account Overview
+          Block Overview
         </h3>
         {loading ? (
           <div className="px-6 pb-6 center flex-col gap-5 bg-[#F9FAFB] dark:bg-[#111928]">
-            <div className="p-3  border border-[#E5E7EB] dark:border-[#374151] bg-white dark:bg-darkBg w-full mt-5">
+            <div className="p-3 border border-[#E5E7EB] dark:border-[#374151] bg-white dark:bg-darkBg w-full mt-5">
               <div className="w-[60%] animate-pulse bg-slate-200 p-2"></div>
             </div>
             <div className="between w-full">
@@ -105,28 +79,34 @@ export default function SingleAccount() {
         ) : (
           <div className="px-6 pb-6 center flex-col bg-[#F9FAFB] dark:bg-[#111928]">
             <div className="w-full p-4 border border-[#E5E7EB] dark:border-[#374151] flex gap-4 items-start bg-whiteBg dark:bg-darkBg  mt-5">
-              <p className="text-sm">{account}</p>
+              <p className="text-sm">{blockSlot}</p>
               <FaRegCopy size={12} className="my-auto cursor-pointer" />
             </div>
             <div className="w-full my-6 between">
-              <OverviewCard
-                title="Balance"
-                unit="$SOL"
-                tooltip={false}
-                value={balanceInSol}
+              <MetricCard
+                title="Block Slot"
+                value={blockData?.blockHeight ?? "N/A"}
                 icon={SolanaLogo}
               />
-
-              <OverviewCard
-                title="Allocated Space"
-                tooltip={true}
-                value={accountData?.space ?? "0"}
+              <MetricCard
+                title="Block Time"
+                value={blockData?.blockTime ? new Date(blockData.blockTime * 1000).toLocaleString() : "N/A"}
+                icon={SolanaLogo}
+              />
+              <MetricCard
+                title="Number of Transactions"
+                value={blockData?.transactions?.length ?? "0"}
+                icon={SolanaLogo}
+              />
+              <MetricCard
+                title="Parent Slot"
+                value={blockData?.parentSlot ?? "N/A"}
                 icon={SolanaLogo}
               />
             </div>
             <div className="w-full border flex-col p-6 gap-10 border-[#E5E7EB] dark:border-[#374151] flex items-start bg-whiteBg dark:bg-darkBg">
-              <h2 className="font-semibold text-xl">Last 5 Transactions</h2>
-              <TxnTable data={transactions} />
+              <h2 className="font-semibold text-xl">Transactions</h2>
+              <BlockTable data={blockData.transactions} />
             </div>
           </div>
         )}
