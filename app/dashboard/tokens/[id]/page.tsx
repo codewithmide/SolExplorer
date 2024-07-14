@@ -76,6 +76,7 @@ const SingleToken = () => {
   }
 
   const { metadata } = tokenDetails?.content;
+  const price = tokenDetails.token_info?.price_info?.price_per_token || 0;
 
 //   console.log({ metadata, tokenDetails });
 
@@ -123,7 +124,7 @@ const SingleToken = () => {
               <TokenCard
                 title="Price"
                 icon="/icons/usdc.webp"
-                value={tokenDetails.token_info?.price_info.price_per_token}
+                value={price.toFixed(8)}
                 unit="USDC"
               />
               <TokenCard
