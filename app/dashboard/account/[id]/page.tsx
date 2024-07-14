@@ -22,7 +22,7 @@ export default function SingleAccount() {
   const [error, setError] = useState<any>(null);
   const [copySuccess, setCopySuccess] = useState<string>("");
 
-  const balanceInSol = accountData?.lamports / LAMPORTS_PER_SOL;
+  const balanceInSol = accountData?.lamports ? (accountData.lamports / LAMPORTS_PER_SOL).toFixed(2) : "0";
 
   useEffect(() => {
     if (account) {
@@ -37,6 +37,7 @@ export default function SingleAccount() {
         "getAccountInfo",
         [account]
       );
+      // console.log(accountInfoResponse)
       setAccountData(accountInfoResponse.value);
     } catch (error: any) {
       console.error("Error fetching account data:", error);
@@ -72,6 +73,8 @@ export default function SingleAccount() {
       setTimeout(() => setCopySuccess(""), 2000); // Hide after 2 seconds
     });
   };
+
+  // console.log(accountData)
 
   if (error) {
     return (
