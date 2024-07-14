@@ -134,7 +134,7 @@ const DashboardLayout = ({ children, path }: any) => {
           className="font-semibold text-teal dark:text-dark-text text-lg flex gap-1 items-center justify-center"
         >
           <Image src={LogoIcon} alt="logo" width={24} height={24} />
-          SolExplore
+          SolExplorer
         </Link>
 
         <div className="relative">
