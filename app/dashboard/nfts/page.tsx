@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import Card from "../../components/layout/Card";
 import DashboardLayout from "../../components/layout/DashboardLayout";
@@ -17,29 +17,30 @@ import SharxImage from "@/public/icons/sharx.webp";
 import MagicImage from "@/public/icons/MagicTicket.webp";
 import ClaynosaurzImage from "@/public/icons/Claynosaurz.webp";
 import y00tImage from "@/public/icons/y00t.webp";
+import NFTTable from "./components/nftTable";
 
-export default function Defi() {
-  const NFTTable = [
+export default function NFTs() {
+  const NFTTableContent = [
     {
       name: "Honeyland",
       items: "1,515",
       price: "8,500",
       volume: "252,463.05",
-      image: HoneylandImage
+      image: HoneylandImage,
     },
     {
       name: "Mad Lads",
       items: "10,736",
       price: "76.49",
       volume: "68,399.36",
-      image: MadlabsImage
+      image: MadlabsImage,
     },
     {
       name: "Frogana",
       items: "5,689",
       price: "2.13",
       volume: "67,428.87",
-      image: FroganaImage
+      image: FroganaImage,
     },
     {
       name: "SMB Gen2",
@@ -53,82 +54,90 @@ export default function Defi() {
       items: "1,062",
       price: "0.807",
       volume: "36,534.01",
-      image: ExperimentImage
+      image: ExperimentImage,
     },
     {
       name: "Retardio Cousins",
       items: "4,474",
       price: "16.99",
       volume: "20,379.99",
-      image: RetardioImage
+      image: RetardioImage,
     },
     {
       name: "Famous Fox Federation",
       items: "9,358",
       price: "4.487",
       volume: "13,751.22",
-      image: FamousFoxImage
+      image: FamousFoxImage,
     },
     {
       name: "STEPN",
       items: "1,010,396",
       price: "0.014",
       volume: "11,693.3",
-      image: STEPNImage
+      image: STEPNImage,
     },
     {
       name: "DeGod",
       items: "4,126",
       price: "16.9",
       volume: "9,702.73",
-      image: DeGodImage
+      image: DeGodImage,
     },
     {
       name: "The Backwoods Hero",
       items: "7,012",
       price: "2.32",
       volume: "9,518.42",
-      image: BackwoodsImage
+      image: BackwoodsImage,
     },
     {
       name: "Aquarius",
       items: "2,474",
       price: "0.986",
       volume: "9,502.05",
-      image: AquariusImage
+      image: AquariusImage,
     },
     {
       name: "sharx",
       items: "10,140",
       price: "1.269",
       volume: "6,957.58",
-      image: SharxImage
+      image: SharxImage,
     },
     {
       name: "Magic Ticket: Normie",
       items: "17,141",
       price: "0.36997",
       volume: "6,875.69",
-      image: MagicImage
+      image: MagicImage,
     },
     {
       name: "Claynosaurz",
       items: "10,292",
       price: "12.75",
       volume: "5,852.26",
-      image: ClaynosaurzImage
+      image: ClaynosaurzImage,
     },
     {
       name: "y00t",
       items: "7,086",
       price: "4.094",
       volume: "5,347.9",
-      image: y00tImage
+      image: y00tImage,
     },
-  ]
+  ];
+
   return (
     <DashboardLayout path="NFTs">
-      <Card>Hello</Card>
+      <Card>
+        <h3 className="text-xl px-5 py-5 w-full bg-whiteBg dark:bg-darkBg leading-[25px] font-semibold">
+          NFTs Overview
+        </h3>
+        <div className="px-6 py-6 center flex-col gap-5 bg-[#F9FAFB] dark:bg-[#111928]">
+          <div className="w-full border flex-col p-6 gap-5 border-[#E5E7EB] dark:border-[#374151] flex items-start bg-whiteBg dark:bg-darkBg"><NFTTable data={NFTTableContent} /></div>
+        </div>
+      </Card>
     </DashboardLayout>
   );
 }

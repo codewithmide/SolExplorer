@@ -96,7 +96,7 @@ export default function DevTools() {
           <div className="w-full border flex-col p-6 gap-5 border-[#E5E7EB] dark:border-[#374151] flex items-start bg-whiteBg dark:bg-darkBg">
             <h2 className="font-semibold text-xl">Ask Toly</h2>
 
-            <p>Greetings! I am Toly, your guide to all things Solana. Ask me anything you'd like to know about this exciting blockchain platform. I'm ready to share my knowledge and answer your questions!</p>
+            <p>Greetings! I am Toly, your guide to all things Solana. Ask me anything you&apos;d like to know about this exciting blockchain platform. I&apos;m ready to share my knowledge and answer your questions!</p>
 
             <div className="my-3 mt-6">
               {aiResponse && (
