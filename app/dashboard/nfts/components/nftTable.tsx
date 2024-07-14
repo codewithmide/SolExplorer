@@ -1,6 +1,7 @@
 import { useRouter } from "next/navigation";
 import classnames from "@/app/common/utils/classnames";
 import Image from "next/image";
+import Solanalogo from "@/public/icons/solana.png"
 
 const NFTTable = ({ data, classname }: any) => {
   const router = useRouter();
@@ -24,7 +25,7 @@ const NFTTable = ({ data, classname }: any) => {
             Price
           </th>
           <th className="px-6 py-5 text-sm leading-4 font-semibold max-w-xs text-center">
-            Volume
+            Total Volume
           </th>
         </tr>
       </thead>
@@ -32,8 +33,8 @@ const NFTTable = ({ data, classname }: any) => {
         {data.map((item: any, index: number) => (
           <tr
             key={index}
-            className="hover:bg-[#EDFAFA] dark:hover:bg-[#4e9fa9] cursor-pointer"
-            onClick={() => router.push(`/dashboard/nft/${item.name}`)}
+            className="hover:bg-[#EDFAFA] dark:hover:bg-[#4e9fa9]"
+            // onClick={() => router.push(`/dashboard/nfts/${item.address}`)}
           >
             <td className="px-6 py-5 whitespace-no-wrap text-[12px] leading-5 flex gap-2 items-center">
               <Image src={item.image} alt={item.name} width={20} height={20} />
@@ -42,7 +43,8 @@ const NFTTable = ({ data, classname }: any) => {
             <td className="px-6 py-5 whitespace-no-wrap text-sm leading-5">
               {item.items}
             </td>
-            <td className="px-6 py-5 whitespace-no-wrap text-sm leading-5 text-center">
+            <td className="px-6 py-5 whitespace-no-wrap text-sm leading-5 text-center center gap-[0.5rem]">
+              <Image src={Solanalogo} alt={item.name} width={20} height={20} />
               {item.price}
             </td>
             <td className="px-6 py-5 whitespace-no-wrap text-sm leading-5 text-center">
@@ -54,7 +56,6 @@ const NFTTable = ({ data, classname }: any) => {
     </table>
   );
 };
-
 
 export const NFTTableLoading = ({ classname }: any) => {
   return (
