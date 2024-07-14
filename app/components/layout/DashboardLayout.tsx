@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import SideNav from "../SideNav";
 import { FaGithub } from "react-icons/fa";
 import ThemeSwitch from "../ThemeSwitch";
@@ -12,12 +12,21 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { SearchResult } from "@/app/common/types/dashboardTypes";
 import AccountService from "@/app/services/accountService";
+import DropDownSelect from "../molecules/DropDownSelect";
+import axiosInstance, { setBaseURL } from "@/app/common/utils/axios.instance";
 
 const DashboardLayout = ({ children, path }: any) => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [searchResult, setSearchResult] = useState<SearchResult | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [activeNetwork, setActiveNetwork] = useState<string>("Mainnet");
   const router = useRouter();
+
+  useEffect(() => {
+    const savedNetwork = localStorage.getItem('network') || 'Mainnet';
+    setActiveNetwork(savedNetwork);
+    setBaseURL(savedNetwork);
+  }, []);
 
   const handleSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -29,42 +38,59 @@ const DashboardLayout = ({ children, path }: any) => {
     }
   };
 
-  const identifySearchType = async (value: string) => {
-    setIsLoading(true);
-    const transactionPattern = /^[1-9A-HJ-NP-Za-km-z]{87,88}$/;
-    const blockPattern = /^\d+$/;
-    const accountPattern = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
+  // const identifySearchType = async (value: string) => {
+  //   setIsLoading(true);
+  //   const transactionPattern = /^[1-9A-HJ-NP-Za-km-z]{87,88}$/;
+  //   const blockPattern = /^\d+$/;
+  //   const accountPattern = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
 
-    try {
-      if (blockPattern.test(value)) {
-        setSearchResult({ type: "Block", value });
-      } else if (transactionPattern.test(value)) {
-        setSearchResult({ type: "Transaction", value });
-      } else if (accountPattern.test(value)) {
-        const accountInfo = await AccountService.fetchData("getAccountInfo", [value]);
-        if (accountInfo && accountInfo.value !== null) {
-          setSearchResult({ type: "Account", value });
-        } else {
-          const tokenInfo = await AccountService.fetchData("getTokenAccountsByOwner", [value, { programId: "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA" }]);
-          if (tokenInfo && tokenInfo.length > 0) {
-            setSearchResult({ type: "Token", value });
-          } else {
-            const programInfo = await AccountService.fetchData("getProgramAccounts", [value]);
-            if (programInfo && programInfo.length > 0) {
-              setSearchResult({ type: "Program", value });
-            } else {
-              setSearchResult({ type: "Invalid", value: "Invalid or incorrect address" });
-            }
-          }
-        }
-      } else {
-        setSearchResult({ type: "Invalid", value: "Invalid or incorrect address" });
-      }
-    } catch (error) {
-      console.error("Error identifying search type:", error);
-      setSearchResult({ type: "Invalid", value: "Invalid or incorrect address" });
-    } finally {
-      setIsLoading(false);
+  //   try {
+  //     if (blockPattern.test(value)) {
+  //       setSearchResult({ type: "Block", value });
+  //     } else if (transactionPattern.test(value)) {
+  //       setSearchResult({ type: "Transaction", value });
+  //     } else if (accountPattern.test(value)) {
+  //       const accountInfo = await AccountService.fetchData("getAccountInfo", [value]);
+  //       if (accountInfo && accountInfo.value !== null) {
+  //         setSearchResult({ type: "Account", value });
+  //       } else {
+  //         const tokenInfo = await AccountService.fetchData("getTokenAccountsByOwner", [value, { programId: "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA" }]);
+  //         if (tokenInfo && tokenInfo.length > 0) {
+  //           setSearchResult({ type: "Token", value });
+  //         } else {
+  //           const programInfo = await AccountService.fetchData("getProgramAccounts", [value]);
+  //           if (programInfo && programInfo.length > 0) {
+  //             setSearchResult({ type: "Program", value });
+  //           } else {
+  //             setSearchResult({ type: "Invalid", value: "Invalid or incorrect address" });
+  //           }
+  //         }
+  //       }
+  //     } else {
+  //       setSearchResult({ type: "Invalid", value: "Invalid or incorrect address" });
+  //     }
+  //   } catch (error) {
+  //     console.error("Error identifying search type:", error);
+  //     setSearchResult({ type: "Invalid", value: "Invalid or incorrect address" });
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+  const identifySearchType = (value: string) => {
+    // Simple regex patterns to identify the type of search
+    const accountPattern = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/; // Solana account address pattern
+    const transactionPattern = /^[1-9A-HJ-NP-Za-km-z]{88}$/; // Solana transaction signature pattern
+    const blockPattern = /^\d+$/; // Block number pattern
+
+    if (accountPattern.test(value)) {
+      setSearchResult({ type: "Account", value });
+    } else if (transactionPattern.test(value)) {
+      setSearchResult({ type: "Transaction", value });
+    } else if (blockPattern.test(value)) {
+      setSearchResult({ type: "Block", value });
+    } else {
+      setSearchResult({ type: "Invalid", value: "Invalid" });
     }
   };
 
@@ -75,6 +101,24 @@ const DashboardLayout = ({ children, path }: any) => {
       router.push(path);
     }
   };
+
+  const handleNetworkChange = (network: string) => {
+    setActiveNetwork(network);
+    setBaseURL(network);
+    localStorage.setItem('network', network);
+    window.location.reload();
+  };
+
+  const dropDownOptions = [
+    {
+      name: "Devnet",
+      action: () => handleNetworkChange("Devnet"),
+    },
+    {
+      name: "Mainnet",
+      action: () => handleNetworkChange("Mainnet"),
+    },
+  ];
 
   return (
     <main className="h-[100%] overflow-hidden flex flex-col text-[#000000] relative">
@@ -131,6 +175,11 @@ const DashboardLayout = ({ children, path }: any) => {
         </div>
 
         <div className="flex gap-6 items-center">
+          <DropDownSelect
+            cta="Select Network"
+            options={dropDownOptions}
+            active={activeNetwork}
+          />
           <ThemeSwitch />
           <FaGithub size={24} />
         </div>
