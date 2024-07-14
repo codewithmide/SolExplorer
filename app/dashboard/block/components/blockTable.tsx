@@ -41,7 +41,7 @@ const BlockTable = ({ data, classname }: any) => {
               {item.transaction.signatures[0]}
             </td>
             <td className="px-6 py-5 whitespace-no-wrap text-sm leading-5 text-center">
-              {item.meta.err === null ? (
+              {item?.meta?.err === null ? (
                 <span className="bg-[#1690311A] text-[#169031] font-semibold px-2 py-1 rounded-full">
                   <small>Confirmed</small>
                 </span>
@@ -52,7 +52,7 @@ const BlockTable = ({ data, classname }: any) => {
               )}
             </td>
             <td className="px-6 py-5 whitespace-no-wrap text-sm leading-5 text-center">
-              {(item.meta.fee / LAMPORTS_PER_SOL).toFixed(9)} SOL
+              {(item?.meta?.fee / LAMPORTS_PER_SOL).toFixed(9)} SOL
             </td>
           </tr>
         ))}

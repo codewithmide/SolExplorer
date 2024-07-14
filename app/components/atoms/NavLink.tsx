@@ -51,7 +51,7 @@ const NavLink = ({ item, index, active, setLinks, links }: any) => {
           !item.drop && "hover:bg-background"
         } ${
           active === item.name
-            ? "bg-[#EDFAFA] dark:bg-[#05505C] border border-[#D5F5F6] dark:border-[#036672] text-[#047481] dark:text-white font-semibold"
+            ? "bg-[#EDFAFA] dark:bg-[#05505C] border border-[#D5F5F6] dark:border-[#036672] text-[#047481] dark:text-[#16BDCA] font-semibold"
             : "text-[#111928] dark:text-white hover:bg-[#D5F5F6] dark:hover:bg-[#036672]"
         }`}
       >
@@ -79,7 +79,7 @@ const NavLink = ({ item, index, active, setLinks, links }: any) => {
                   onClick={() => handleSubLinkClick(navItem)}
                   className={`cursor-pointer text-sm mb-2 px-4 py-3 rounded-md hover:bg-background ${
                     active === navItem
-                      ? "bg-[#EDFAFA] dark:bg-[#05505C] border border-[#D5F5F6] dark:border-[#036672] text-[#047481] dark:text-white font-semibold"
+                      ? "bg-[#EDFAFA] dark:bg-[#05505C] border border-[#D5F5F6] dark:border-[#036672] text-[#047481] dark:text-[#16BDCA] font-semibold"
                       : "text-[#111928] dark:text-white hover:bg-[#D5F5F6] dark:hover:bg-[#036672]"
                   }`}
                 >

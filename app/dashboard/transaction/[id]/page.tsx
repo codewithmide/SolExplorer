@@ -39,7 +39,7 @@ export default function SingleTransaction() {
   };
 
   const renderStatus = (meta: any) => {
-    if (meta.err === null) {
+    if (meta?.err === null) {
       return {
         status: "Confirmed",
         statusStyle: "bg-[#1690311A] text-[#169031] font-semibold",
@@ -90,15 +90,15 @@ export default function SingleTransaction() {
             <div className="between w-full">
               <TransactionCard
                 title="Transaction Status"
-                value={renderStatus(transaction.meta).status}
+                value={renderStatus(transaction?.meta).status}
               />
               <TransactionCard
                 title="Transaction Timestamp"
-                value={new Date(transaction.blockTime * 1000).toLocaleString()}
+                value={new Date(transaction?.blockTime * 1000).toLocaleString()}
               />
               <TransactionCard
                 title="Transaction Fee $SOL"
-                value={(transaction.meta.fee / LAMPORTS_PER_SOL).toString()}
+                value={(transaction?.meta?.fee / LAMPORTS_PER_SOL).toString()}
               />
               <TransactionCard
                 title="Post Balance $SOL"
@@ -110,23 +110,23 @@ export default function SingleTransaction() {
             <div className="w-full border center flex-col p-5 border-[#E5E7EB] dark:border-[#374151] flex items-start bg-whiteBg dark:bg-darkBg divide-[#E5E7EB] rounded-lg dark:divide-[#374151] divide-y-[1px]">
               <div className="w-full py-4 between">
                 <p>Slot Number</p>
-                <p>{transaction.slot}</p>
+                <p>{transaction?.slot}</p>
               </div>
               <div className="w-full py-4 between">
                 <p>Number of Signatures</p>
-                <p>{transaction.transaction.signatures.length}</p>
+                <p>{transaction?.transaction?.signatures?.length}</p>
               </div>
               <div className="w-full py-4 between">
                 <p>Compute Units Consumed</p>
-                <p>{transaction.meta.computeUnitsConsumed}</p>
+                <p>{transaction?.meta?.computeUnitsConsumed}</p>
               </div>
               <div className="w-full py-4 between">
                 <p>Number of Instructions</p>
-                <p>{transaction.transaction.message.instructions.length}</p>
+                <p>{transaction?.transaction?.message?.instructions.length}</p>
               </div>
               <div className="w-full py-4 between">
                 <p>Recent Blockhash</p>
-                <p>{transaction.transaction.message.recentBlockhash}</p>
+                <p>{transaction?.transaction?.message?.recentBlockhash}</p>
               </div>
             </div>
 
