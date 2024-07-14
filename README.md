@@ -59,57 +59,6 @@ yarn dev
 
 Open your browser and go to [http://localhost:3000](http://localhost:3000) to see the app.
 
-## Project Structure
-
-```lua
-.
-├── .next
-├── app
-│   ├── common
-│   │   ├── types
-│   │   └── utils
-│   ├── components
-│   │   ├── atoms
-│   │   ├── charts
-│   │   ├── layout
-│   │   ├── molecules
-│   │   ├── SideNav.tsx
-│   │   └── ThemeSwitch.tsx
-│   ├── context
-│   │   └── themeProvider.tsx
-│   ├── dashboard
-│   │   ├── account
-│   │   ├── block
-│   │   ├── developer-tools
-│   │   ├── nfts
-│   │   ├── tokens
-│   │   ├── transaction
-│   │   └── page.tsx
-│   ├── services
-│   │   ├── accountService.ts
-│   │   ├── dashboardService.ts
-│   │   ├── nftService.ts
-│   │   └── tokenService.ts
-│   ├── favicon.ico
-│   ├── globals.css
-│   ├── layout.tsx
-│   ├── not-found.tsx
-│   └── page.tsx
-├── node_modules
-├── public
-├── .env
-├── .eslintrc.json
-├── .gitignore
-├── next-env.d.ts
-├── next.config.mjs
-├── package-lock.json
-├── package.json
-├── postcss.config.mjs
-├── README.md
-├── tailwind.config.ts
-└── tsconfig.json
-```
-
 ## Tools and Technologies
 
 - Next.js: React framework for building the app.
