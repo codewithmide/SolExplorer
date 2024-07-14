@@ -114,7 +114,12 @@ Open your browser and go to [http://localhost:3000](http://localhost:3000) to se
 - classnames: Utility for conditionally joining class names.
 - numberFormatter: Utility for formatting numbers.
 
-Contact
+### Contact
+
 For any questions or feedback, please contact me on X [@codewithmide](https://x.com/codewithmide).
+
+### Note
+
+Most transactions are limited to 5 - 10. This is intentionally done to save API credits.
 
 Thank you for using SolExplorer! I hope it helps you explore the Solana blockchain more effectively.
