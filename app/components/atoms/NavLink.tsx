@@ -28,7 +28,7 @@ const NavLink = ({ item, index, active, setLinks, links }: any) => {
     if (item.sublink?.includes(active)) {
       dropLink(item.link);
     }
-  }, []);
+  },);
 
   const dropLink = (url: string) => {
     const newLink = [...links];

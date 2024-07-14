@@ -14,13 +14,16 @@ import { SearchResult } from "@/app/common/types/dashboardTypes";
 import AccountService from "@/app/services/accountService";
 import DropDownSelect from "../molecules/DropDownSelect";
 import axiosInstance, { setBaseURL } from "@/app/common/utils/axios.instance";
+import { useNetwork } from "@/app/common/utils/axios.instance";
 
 const DashboardLayout = ({ children, path }: any) => {
+  const router = useRouter();
+  const { network, changeNetwork } = useNetwork();
+
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [searchResult, setSearchResult] = useState<SearchResult | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [activeNetwork, setActiveNetwork] = useState<string>("Mainnet");
-  const router = useRouter();
 
   useEffect(() => {
     const savedNetwork = localStorage.getItem('network') || 'Mainnet';
@@ -112,11 +115,11 @@ const DashboardLayout = ({ children, path }: any) => {
   const dropDownOptions = [
     {
       name: "Devnet",
-      action: () => handleNetworkChange("Devnet"),
+      action: () => changeNetwork("Devnet"),
     },
     {
       name: "Mainnet",
-      action: () => handleNetworkChange("Mainnet"),
+      action: () => changeNetwork("Mainnet"),
     },
   ];
 
@@ -175,10 +178,10 @@ const DashboardLayout = ({ children, path }: any) => {
         </div>
 
         <div className="flex gap-6 items-center">
-          <DropDownSelect
+        <DropDownSelect
             cta="Select Network"
             options={dropDownOptions}
-            active={activeNetwork}
+            active={network}
           />
           <ThemeSwitch />
           <FaGithub size={24} />
