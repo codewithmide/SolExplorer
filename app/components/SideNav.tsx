@@ -40,9 +40,15 @@ const navLinks = [
   },
   {
     id: 5,
+    name: "Tokens",
+    link: "/dashboard/nfts",
+    icon: TokenIconInactive,
+  },
+  {
+    id: 5,
     name: "NFTs",
     link: "/dashboard/nfts",
-    icon: DefiIconInactive,
+    icon: ValidatorIconInactive,
   },
   {
     id: 6,

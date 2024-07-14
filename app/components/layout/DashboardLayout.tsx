@@ -11,9 +11,8 @@ import LogoIcon from "@/public/svgs/logoIcon.svg";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { SearchResult } from "@/app/common/types/dashboardTypes";
-import AccountService from "@/app/services/accountService";
 import DropDownSelect from "../molecules/DropDownSelect";
-import axiosInstance, { setBaseURL } from "@/app/common/utils/axios.instance";
+import { setBaseURL } from "@/app/common/utils/axios.instance";
 import { useNetwork } from "@/app/common/utils/axios.instance";
 
 const DashboardLayout = ({ children, path }: any) => {
@@ -103,13 +102,6 @@ const DashboardLayout = ({ children, path }: any) => {
       const path = `/dashboard/${type.toLowerCase()}/${value}`;
       router.push(path);
     }
-  };
-
-  const handleNetworkChange = (network: string) => {
-    setActiveNetwork(network);
-    setBaseURL(network);
-    localStorage.setItem('network', network);
-    window.location.reload();
   };
 
   const dropDownOptions = [
