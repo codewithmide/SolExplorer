@@ -28,8 +28,9 @@ export default function SingleBlock() {
 
   const fetchBlockData = async (slot: string) => {
     try {
-      const blockInfoResponse = await AccountService.fetchData("getBlock", [parseInt(slot), { maxSupportedTransactionVersion: 0 }]);
-      setBlockData(blockInfoResponse);
+      const blockInfoResponse = await AccountService.fetchData("getBlock", [parseInt(slot), { maxSupportedTransactionVersion: 5 }]);
+      const transactions = blockInfoResponse.transactions.slice(-10);
+      setBlockData({ ...blockInfoResponse, transactions });
     } catch (error: any) {
       console.error("Error fetching block data:", error);
       setError("Error fetching block data");
@@ -112,8 +113,8 @@ export default function SingleBlock() {
               />
             </div>
             <div className="w-full border flex-col p-6 gap-10 border-[#E5E7EB] dark:border-[#374151] flex items-start bg-whiteBg dark:bg-darkBg">
-              <h2 className="font-semibold text-xl">Transactions</h2>
-              <BlockTable data={blockData.transactions} />
+              <h2 className="font-semibold text-xl">Last 10 Transactions</h2>
+              <BlockTable data={blockData?.transactions} />
             </div>
           </div>
         )}
