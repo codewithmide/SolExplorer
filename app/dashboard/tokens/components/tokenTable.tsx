@@ -1,8 +1,8 @@
 import { useRouter } from "next/navigation";
 import classnames from "@/app/common/utils/classnames";
-import { format } from "date-fns";
+import Image from "next/image";
 
-const TxnTable = ({ data, classname }: any) => {
+const TokenTable = ({ data, classname }: any) => {
   const router = useRouter();
 
   return (
@@ -15,51 +15,32 @@ const TxnTable = ({ data, classname }: any) => {
       <thead className="bg-[#D5F5F6] dark:bg-[#036672]">
         <tr>
           <th className="px-6 py-5 text-left text-sm leading-4 font-semibold">
-            Transaction Signature
+            Name
           </th>
           <th className="px-6 py-5 text-left text-sm leading-4 font-semibold max-w-xs">
-            Timestamp
+            Symbol
           </th>
-          <th className="px-6 py-5 text-sm leading-4 font-semibold max-w-xs text-center">
-            Status
-          </th>
-          <th className="px-6 py-5 text-sm leading-4 font-semibold max-w-xs text-center">
-            Fee (SOL)
+          <th className="px-6 py-5 text-sm leading-4 font-semibold max-w-xs text-right">
+            Address
           </th>
         </tr>
       </thead>
-      <tbody className="divide-[#E5E7EB] dark:divide-[#374151] divide-y-[1px]  text-dark">
-        {data.map((item: any, index: any) => (
+      <tbody className="divide-[#E5E7EB] dark:divide-[#374151] divide-y-[1px] text-dark">
+        {data.map((item: any, index: number) => (
           <tr
             key={index}
-            className="hover:bg-[#EDFAFA] dark:hover:bg-[#4e9fa9] cursor-pointer"
-            onClick={() =>
-              router.push(
-                `/dashboard/transaction/${item.transaction.signatures[0]}`
-              )
-            }
+            className="hover:bg-[#EDFAFA] dark:hover:bg-[#4e9fa9] cursor-pointer text-sm"
+            onClick={() => router.push(`/dashboard/tokens/${item.address}`)}
           >
-            <td className="px-6 py-5 whitespace-no-wrap text-[12px] leading-5 flex gap-2 items-center">
-              {item?.transaction?.signatures[0]}
+            <td className="px-6 py-5 whitespace-no-wrap leading-5 flex gap-2 items-center">
+              <Image src={item.Image} alt={item.Image} width={20} height={20} />
+              {item.Token}
             </td>
             <td className="px-6 py-5 whitespace-no-wrap text-sm leading-5">
-              {item?.blockTime
-                ? format(new Date(item.blockTime * 1000), "yyyy-MM-dd HH:mm:ss")
-                : "N/A"}
+              {item.Symbol}
             </td>
-            <td className="px-6 py-5 whitespace-no-wrap text-sm leading-5 text-center">
-              {item?.meta?.err === null ? (
-                <span className="bg-[#1690311A] text-[#169031] font-semibold px-2 py-1 rounded-full">
-                  <small>Confirmed</small>
-                </span>
-              ) : (
-                <span className="bg-[#F21F111A] font-semibold text-[#F21F11] px-2 py-1 rounded-full">
-                  <small>Error</small>
-                </span>
-              )}
-            </td>
-            <td className="px-6 py-5 whitespace-no-wrap text-sm leading-5 text-center">
-              {(item?.meta?.fee / 1e9).toFixed(9)} SOL
+            <td className="px-6 py-5 whitespace-no-wrap text-sm leading-5 text-right">
+              {item.address}
             </td>
           </tr>
         ))}
@@ -68,7 +49,7 @@ const TxnTable = ({ data, classname }: any) => {
   );
 };
 
-export const TxnTableLoading = ({ classname }: any) => {
+export const TokenTableLoading = ({ classname }: any) => {
   return (
     <table
       className={classnames(
@@ -79,21 +60,18 @@ export const TxnTableLoading = ({ classname }: any) => {
       <thead className="bg-[#D5F5F6] dark:bg-[#036672]">
         <tr>
           <th className="px-6 py-5 text-left text-sm leading-4 font-semibold">
-            Transaction Signature
+            Name
           </th>
           <th className="px-6 py-5 text-left text-sm leading-4 font-semibold max-w-xs">
-            Timestamp
+            Symbol
           </th>
           <th className="px-6 py-5 text-sm leading-4 font-semibold max-w-xs text-center">
-            Status
-          </th>
-          <th className="px-6 py-5 text-sm leading-4 font-semibold max-w-xs text-center">
-            Fee (SOL)
+            Address
           </th>
         </tr>
       </thead>
 
-      <tbody className="">
+      <tbody className="bg-white divide-background divide-y-2 text-dark">
         {[...new Array(5).fill(0)].map((item: any, index: any) => (
           <tr key={index} className="cursor-progress">
             <td className="px-4 py-4 whitespace-no-wrap text-sm leading-5 flex gap-2 items-center">
@@ -115,4 +93,4 @@ export const TxnTableLoading = ({ classname }: any) => {
   );
 };
 
-export default TxnTable;
+export default TokenTable;

@@ -7,7 +7,6 @@ import AccountIconInactive from "@/public/svgs/accountIconInactive.svg";
 import ValidatorIconInactive from "@/public/svgs/validatorIconInactive.svg";
 import TokenIconInactive from "@/public/svgs/tokenIconInactive.svg";
 import DevIconInactive from "@/public/svgs/devIconInactive.svg";
-import DefiIconInactive from "@/public/svgs/defiIconInactive.svg";
 import SolanaLogo from "@/public/icons/solana.png";
 import NavLink from "./atoms/NavLink";
 import { useState } from "react";
@@ -45,13 +44,13 @@ const navLinks = [
     icon: TokenIconInactive,
   },
   {
-    id: 5,
+    id: 6,
     name: "NFTs",
     link: "/dashboard/nfts",
     icon: ValidatorIconInactive,
   },
   {
-    id: 6,
+    id: 7,
     name: "Developer Tools",
     link: "/dashboard/developer-tools",
     icon: DevIconInactive,
