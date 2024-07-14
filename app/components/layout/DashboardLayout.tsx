@@ -176,7 +176,7 @@ const DashboardLayout = ({ children, path }: any) => {
             active={network}
           />
           <ThemeSwitch />
-          <FaGithub size={24} />
+          <a href="https://github.com/codewithmide/SolExplorer" target="_blank"><FaGithub size={24} /></a>
         </div>
       </div>
 
