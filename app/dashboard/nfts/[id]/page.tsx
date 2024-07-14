@@ -7,7 +7,6 @@ import { Metaplex } from "@metaplex-foundation/js";
 import Card from "@/app/components/layout/Card";
 import bs58 from 'bs58';
 import DashboardLayout from "@/app/components/layout/DashboardLayout";
-import axiosInstance from "@/app/common/utils/axios.instance";
 import AccountService from "@/app/services/accountService";
 
 const SingleNFT = () => {

@@ -166,7 +166,7 @@ export default function NFTs() {
           <div className="tooltip my-auto">
             <IoMdInformationCircle size={24} className="text-start" />
             <span className="tooltiptext-2">
-              NFT details are currently static
+              NFTs are listed in no particular order, also nft details are currently static
             </span>
           </div>
         </div>
