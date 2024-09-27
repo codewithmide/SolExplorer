@@ -1,3 +1,4 @@
+import { mainnetAxiosInstance } from '../common/utils/axios.instance';
 import { ApiRequestClient } from './../common/utils/api-client';
 
 export default class AccountService {
@@ -34,6 +35,17 @@ export default class AccountService {
   }
 
   static async requestAirdrop(address: string, lamports: number) {
-    return this.fetchData("requestAirdrop", [address, lamports]);
+    const payload = {
+      jsonrpc: "2.0",
+      method: "requestAirdrop",
+      params: [address, lamports],
+      id: 1,
+    };
+    console.log('Airdrop request payload:', JSON.stringify(payload, null, 2));
+    const response = await mainnetAxiosInstance.post("", payload);
+    if (response?.data?.error) {
+      throw new Error(response.data.error.message);
+    }
+    return response.data.result;
   }
 }

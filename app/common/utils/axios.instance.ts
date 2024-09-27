@@ -11,6 +11,14 @@ const getBaseURL = () => {
   return process.env.NEXT_PUBLIC_MAINNET_API_BASE_URL;
 };
 
+export const mainnetAxiosInstance: AxiosInstance = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_DEVNET_API_BASE_URL,
+  headers: {
+    Accept: 'application/json',
+    'Content-type': 'application/json',
+  },
+});
+
 const axiosInstance: AxiosInstance = axios.create({
   baseURL: getBaseURL(),
   headers: {

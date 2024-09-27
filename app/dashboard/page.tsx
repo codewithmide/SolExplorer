@@ -12,6 +12,9 @@ import TotalSupplyIcon from "@/public/icons/supply.png";
 import BlockHeightIcon from "@/public/icons/height.png";
 import TransactionIcon from "@/public/icons/transaction.png";
 import CirculatingIcon from "@/public/icons/circulating.png";
+import { Button } from "../components/molecules/FormComponents";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const TPSChart = dynamic(
   () => import("../components/charts/TPSChart").then((mod) => mod.TPSChart),
@@ -48,15 +51,21 @@ const EpochInfoChartLoader = dynamic(
 export default function Dashboard() {
   const [epochInfo, setEpochInfo] = useState<EpochInfo | null>(null);
   const [tpsData, setTpsData] = useState<PerformanceSample[]>([]);
-  const [circulatingSupply, setCirculatingSupply] = useState<number | null>(null);
+  const [circulatingSupply, setCirculatingSupply] = useState<number | null>(
+    null
+  );
   const [totalSupply, setTotalSupply] = useState<number | null>(null);
   const [transactionCount, setTransactionCount] = useState<number | null>(null);
   const [blockHeight, setBlockHeight] = useState<number | null>(null);
-  
+
+  const router = useRouter();
+
 
   async function fetchData() {
     try {
-      const epochInfoResponse = await DashboardService.fetchData("getEpochInfo");
+      const epochInfoResponse = await DashboardService.fetchData(
+        "getEpochInfo"
+      );
       setEpochInfo({
         epoch: epochInfoResponse.epoch,
         slotsInEpoch: epochInfoResponse.slotsInEpoch,
@@ -92,19 +101,36 @@ export default function Dashboard() {
   useEffect(() => {
     fetchData();
   }, []);
+  
+  const routeToToly = () => {
+    router.push('/dashboard/toly');
+  };
 
   return (
     <DashboardLayout path="Dashboard">
       <Card>
-        <h3 className="text-xl px-5 py-5 w-full bg-whiteBg dark:bg-darkBg leading-[25px] font-semibold">
-          Dashboard
-        </h3>
+        <div className="between w-full py-3">
+          <h3 className="text-xl px-5 py-5 w-full bg-whiteBg dark:bg-darkBg leading-[25px] font-semibold">
+            Dashboard
+          </h3>
+          <Button
+            link={routeToToly}
+            classname="border-[#047481] dark:border-[#3db2be] border gap-2 center w-[250px] mr-4"
+          >
+            <Image src="/icons/sparkle.png" alt="sparkle" width={15} height={15}/>
+            <p className="text-[#047481] dark:text-[#3db2be]">Ask Toly Anything</p>
+          </Button>
+        </div>
         <div className="px-6 pb-6 center flex-col bg-[#F9FAFB] dark:bg-[#111928]">
           <div className="w-full my-6 between">
-          <MetricCard
+            <MetricCard
               title="Circulating Supply"
               icon={CirculatingIcon}
-              value={circulatingSupply !== null ? formatNumber(circulatingSupply) : null}
+              value={
+                circulatingSupply !== null
+                  ? formatNumber(circulatingSupply)
+                  : null
+              }
               unit="$SOL"
             />
             <MetricCard
@@ -116,7 +142,11 @@ export default function Dashboard() {
             <MetricCard
               title="Transaction Count"
               icon={TransactionIcon}
-              value={transactionCount !== null ? formatNumber(transactionCount) : null}
+              value={
+                transactionCount !== null
+                  ? formatNumber(transactionCount)
+                  : null
+              }
             />
             <MetricCard
               title="Block Height"
