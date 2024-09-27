@@ -7,6 +7,7 @@ import AccountIconInactive from "@/public/svgs/accountIconInactive.svg";
 import ValidatorIconInactive from "@/public/svgs/validatorIconInactive.svg";
 import TokenIconInactive from "@/public/svgs/tokenIconInactive.svg";
 import DevIconInactive from "@/public/svgs/devIconInactive.svg";
+import TolyLogo from "@/public/svgs/toly.svg"
 import SolanaLogo from "@/public/icons/solana.png";
 import NavLink from "./atoms/NavLink";
 import { useState } from "react";
@@ -43,25 +44,31 @@ const navLinks = [
     link: "/dashboard/tokens",
     icon: TokenIconInactive,
   },
-  {
-    id: 6,
-    name: "NFTs",
-    link: "/dashboard/nfts",
-    icon: ValidatorIconInactive,
-  },
+  // {
+  //   id: 6,
+  //   name: "NFTs",
+  //   link: "/dashboard/nfts",
+  //   icon: ValidatorIconInactive,
+  // },
   {
     id: 7,
     name: "Developer Tools",
     link: "/dashboard/developer-tools",
     icon: DevIconInactive,
   },
+  {
+    id: 8,
+    name: "Ask Toly",
+    link: "/dashboard/toly",
+    icon: TolyLogo,
+  }
 ];
 
 const SideNav = ({ active }: any) => {
   const [links, setLinks] = useState(navLinks);
 
   return (
-    <div className="w-[18rem] pt-5 bg-whiteBg dark:bg-darkBg text-white-text dark:text-dark-text">
+    <div className="w-[18rem] pt-5 bg-whiteBg overflow-hidden dark:bg-darkBg text-white-text dark:text-dark-text">
       <div className="sticky top-0 flex flex-col justify-between max-h-screen h-full  pl-2 pr-5 overflow-scroll">
         <div>
           {links?.map((item, index) => (

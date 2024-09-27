@@ -60,7 +60,6 @@ body {
   visibility: visible;
 }
 
-
 .tooltip .tooltiptext-2 {
   visibility: hidden;
   width: 300px;
@@ -80,3 +79,8 @@ body {
   visibility: visible;
 }
 
+.textarea-style {
+  padding: 12px 12px; /* Adjust padding to ensure the placeholder and text are visible and aligned */
+  /* line-height: 1.5; */
+  resize: none; /* Disable resizing */
+}

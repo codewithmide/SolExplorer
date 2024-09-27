@@ -5,7 +5,7 @@ import SideNav from "../SideNav";
 import { FaGithub } from "react-icons/fa";
 import ThemeSwitch from "../ThemeSwitch";
 import Link from "next/link";
-import { Input } from "../molecules/FormComponents";
+import { Button, Input } from "../molecules/FormComponents";
 import searchIcon from "@/public/svgs/search.svg";
 import LogoIcon from "@/public/svgs/logoIcon.svg";
 import Image from "next/image";
@@ -14,6 +14,10 @@ import { SearchResult } from "@/app/common/types/dashboardTypes";
 import DropDownSelect from "../molecules/DropDownSelect";
 import { setBaseURL } from "@/app/common/utils/axios.instance";
 import { useNetwork } from "@/app/common/utils/axios.instance";
+import { User } from "@supabase/supabase-js";
+import { supabase } from "@/app/lib/supabase";
+import { FcGoogle } from "react-icons/fc";
+
 
 const DashboardLayout = ({ children, path }: any) => {
   const router = useRouter();
@@ -24,11 +28,49 @@ const DashboardLayout = ({ children, path }: any) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [activeNetwork, setActiveNetwork] = useState<string>("Mainnet");
 
+  const [user, setUser] = useState<User | null>(null);
+
   useEffect(() => {
-    const savedNetwork = localStorage.getItem('network') || 'Mainnet';
+    const savedNetwork = localStorage.getItem("network") || "Mainnet";
     setActiveNetwork(savedNetwork);
     setBaseURL(savedNetwork);
+
+    // Check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
+
+  const handleSignIn = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: window.location.origin,
+        },
+      });
+      if (error) throw error;
+    } catch (error) {
+      console.error("Error signing in with Google:", error);
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
 
   const handleSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -170,13 +212,34 @@ const DashboardLayout = ({ children, path }: any) => {
         </div>
 
         <div className="flex gap-6 items-center">
-        <DropDownSelect
+          {user ? (
+            <div className="flex items-center gap-2">
+              <span>{user.email}</span>
+              <Button
+                link={handleSignOut}
+                classname="px-2 bg-red-500 text-white rounded"
+              >
+                Sign Out
+              </Button>
+            </div>
+          ) : (
+            <Button
+              link={handleSignIn}
+              classname="px-3  center gap-2 border-[#E5E7EB] dark:border-[#374151] border rounded "
+            >
+              <p>Sign In with Google</p>
+              <FcGoogle />
+            </Button>
+          )}
+          <DropDownSelect
             cta="Select Network"
             options={dropDownOptions}
             active={network}
           />
           <ThemeSwitch />
-          <a href="https://github.com/codewithmide/SolExplorer" target="_blank"><FaGithub size={24} /></a>
+          <a href="https://github.com/codewithmide/SolExplorer" target="_blank">
+            <FaGithub size={24} />
+          </a>
         </div>
       </div>
 

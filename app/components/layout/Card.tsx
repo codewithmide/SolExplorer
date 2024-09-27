@@ -1,3 +1,5 @@
+"use client";
+
 import classnames from "@/app/common/utils/classnames";
 
 const Card = ({ classname, children, onClick }: any) => {
