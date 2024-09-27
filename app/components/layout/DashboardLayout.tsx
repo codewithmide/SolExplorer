@@ -54,7 +54,7 @@ const DashboardLayout = ({ children, path }: any) => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: "https://solexplorer-v1.vercel.app/",
+          redirectTo: window.location.origin,
         },
       });
       if (error) throw error;
