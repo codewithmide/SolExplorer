@@ -19,7 +19,7 @@ export default class AccountService {
     }
   }
 
-  static async getTransactionSignatures(address: string, limit = 5) {
+  static async getTransactionSignatures(address: string, limit = 2) {
     return this.fetchData("getSignaturesForAddress", [
       address,
       { limit }
