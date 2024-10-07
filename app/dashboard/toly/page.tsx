@@ -4,28 +4,27 @@ import React, { useState, useRef, useEffect, useCallback } from "react";
 import Card from "@/app/components/layout/Card";
 import DashboardLayout from "@/app/components/layout/DashboardLayout";
 import { Button, Textarea } from "@/app/components/molecules/FormComponents";
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import ReactMarkdown from "react-markdown";
 import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 import Image from "next/image";
 import sendIcon from "@/public/icons/send.png";
-import { saveChat, getUserChats } from "@/app/services/userService";
+import { saveChat } from "@/app/services/userService";
 import { supabase } from "@/app/lib/supabase";
 import { User } from "@supabase/supabase-js";
 import aiIcon from "@/public/svgs/toly.svg";
 import { atomDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { formatTime } from "@/app/utils/helpers";
+import { gemini } from "@/app/lib/gemini";
+import { ChatMessage } from "@/app/types/chat";
+import { MdKeyboardVoice } from "react-icons/md";
+import Modal from "@/app/components/layout/Modal";
+import InteractiveAudioSVG from "@/app/components/atoms/audioSvg";
+import { MicrophoneButton } from "@/app/components/layout/Microphone";
+import Loader from "@/app/components/atoms/loader";
 
-const gemini = new GoogleGenerativeAI(
-  String(process.env.NEXT_PUBLIC_GEMINI_API_KEY)
-);
-
-interface ChatMessage {
-  role: "user" | "ai";
-  content: string;
-  timestamp: Date | string;
-}
+const TTSEndpoint = process.env.SOLEXPRLORER_NODE_API_BASE_URL;
 
 const AskToly: React.FC = () => {
   const [prompt, setPrompt] = useState<string>("");
@@ -34,51 +33,146 @@ const AskToly: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const responseRef = useRef<HTMLDivElement | null>(null);
+  const [openModal, setOpenModal] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [transcript, setTranscript] = useState<string | null>(null);
+  const [voiceLoading, setVoiceLoading] = useState(false);
+  const [voiceError, setVoiceError] = useState<string | null>(null);
+  const [voiceChatMessages, setVoiceChatMessages] = useState<ChatMessage[]>([]);
+  const [isListening, setIsListening] = useState<boolean>(false);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [recognition, setRecognition] = useState<any>(null);
 
-  const loadChatMessages = useCallback(() => {
-    const savedMessages = localStorage.getItem("chatMessages");
-    if (savedMessages) {
-      const parsedMessages: ChatMessage[] = JSON.parse(savedMessages);
-      const messagesWithDates = parsedMessages.map((msg) => ({
-        ...msg,
-        timestamp: new Date(msg.timestamp),
-      }));
-      setChatMessages(messagesWithDates);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const SpeechRecognition =
+        (window as any).SpeechRecognition ||
+        (window as any).webkitSpeechRecognition;
+      if (SpeechRecognition) {
+        const newRecognition = new SpeechRecognition();
+        newRecognition.continuous = false;
+        newRecognition.lang = "en-US";
+        newRecognition.interimResults = false;
+        newRecognition.maxAlternatives = 1;
+        setRecognition(newRecognition);
+      } else {
+        console.error("Speech recognition not supported in this browser.");
+      }
     }
   }, []);
 
-  useEffect(() => {
-    loadChatMessages();
+  const handleModal = () => {
+    setOpenModal(!openModal);
+  };
 
-    const fetchUser = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      setUser(user);
-    };
+  const handleVoicePrompt = async (transcribedText: string) => {
+    setVoiceLoading(true);
+    setVoiceError(null);
+    const timestamp = new Date();
 
-    fetchUser();
+    try {
+      const userMessage: ChatMessage = {
+        role: "user",
+        content: transcribedText,
+        timestamp,
+      };
 
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setUser(session?.user ?? null);
+      const updatedMessages = [...voiceChatMessages, userMessage];
+      setVoiceChatMessages(updatedMessages);
+
+      const model = await gemini.getGenerativeModel({
+        model: "gemini-1.5-flash",
+      });
+
+      const result = await model.generateContent([
+        `You are Toly, an AI expert in Solana. Give a response to the following text in a conversational manner, don't give too long responses but you can be expressive when needed, be short and concise as much as possible dont respond with an emoji: ${transcribedText}`,
+      ]);
+
+      const rawResponse = await result.response.text();
+      const formattedResponse = rawResponse.replace(/```/g, "\n```").trim();
+
+      const aiMessage: ChatMessage = {
+        role: "ai",
+        content: formattedResponse,
+        timestamp: new Date(),
+      };
+      setVoiceChatMessages((prev: any) => [...prev, aiMessage]);
+      const response = await fetch(
+        `${TTSEndpoint}/api/generateSpeech`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ text: formattedResponse }),
+        }
+      );
+
+      if (response.ok) {
+        const audioBlob = await response.blob();
+        const audioUrl = URL.createObjectURL(audioBlob);
+
+        const audio = new Audio(audioUrl);
+        audio.onplay = () => setIsPlaying(true);
+        audio.onended = () => setIsPlaying(false);
+        await audio.play();
+
+        URL.revokeObjectURL(audioUrl);
+      } else {
+        throw new Error("Failed to generate speech");
       }
-    );
+    } catch (err) {
+      setVoiceError(
+        `Failed to get response: ${
+          err instanceof Error ? err.message : String(err)
+        }`
+      );
+    } finally {
+      setVoiceLoading(false);
+    }
+  };
 
-    return () => {
-      authListener.subscription.unsubscribe();
-    };
-  }, [loadChatMessages]);
+  const startListening = useCallback(() => {
+    if (recognition) {
+      setIsListening(true);
+      recognition.start();
+      console.log("Recording started...");
+    }
+  }, [recognition]);
 
   useEffect(() => {
-    if (responseRef.current) {
-      responseRef.current.scrollTop = responseRef.current.scrollHeight;
+    if (recognition) {
+      recognition.onresult = (event: any) => {
+        const transcriptText = event.results[0][0].transcript;
+        console.log(`Transcribed Text: ${transcriptText}`);
+        setTranscript(transcriptText);
+        handleVoicePrompt(transcriptText);
+      };
+
+      recognition.onspeechend = () => {
+        recognition.stop();
+        setIsListening(false);
+        console.log("Recording stopped due to silence.");
+      };
+
+      recognition.onerror = (event: any) => {
+        console.error(`Error occurred: ${event.error}`);
+        if (event.error === "network") {
+          setErrorMessage(
+            "Network error: Please check your internet connection."
+          );
+        } else {
+          setErrorMessage(`An error occurred: ${event.error}`);
+        }
+        setIsListening(false);
+      };
     }
-  }, [chatMessages]);
+  }, [recognition, handleVoicePrompt]);
 
   const handlePrompt = async () => {
     setLoading(true);
     setError(null);
+    setPrompt("");
     const timestamp = new Date();
     try {
       const userMessage: ChatMessage = {
@@ -124,26 +218,64 @@ const AskToly: React.FC = () => {
     }
   };
 
-  const formatTime = (date: Date | string) => {
-    if (typeof date === "string") {
-      date = new Date(date);
+  const loadChatMessages = useCallback(() => {
+    const savedMessages = localStorage.getItem("chatMessages");
+    if (savedMessages) {
+      const parsedMessages: ChatMessage[] = JSON.parse(savedMessages);
+      const messagesWithDates = parsedMessages.map((msg) => ({
+        ...msg,
+        timestamp: new Date(msg.timestamp),
+      }));
+      setChatMessages(messagesWithDates);
     }
-    if (!(date instanceof Date) || isNaN(date.getTime())) {
-      return "Invalid Date";
+  }, []);
+
+  useEffect(() => {
+    loadChatMessages();
+
+    const fetchUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      setUser(user);
+    };
+
+    fetchUser();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setUser(session?.user ?? null);
+      }
+    );
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, [loadChatMessages]);
+
+  useEffect(() => {
+    if (responseRef.current) {
+      responseRef.current.scrollTop = responseRef.current.scrollHeight;
     }
-    return date.toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true,
-    });
-  };
+  }, [chatMessages]);
 
   return (
     <DashboardLayout path="Ask Toly">
       <Card>
-        <h3 className="text-xl px-5 py-5 w-full bg-whiteBg dark:bg-darkBg leading-[25px] font-semibold">
-          Ask Toly
-        </h3>
+        <div className="between">
+          <h3 className="text-xl px-5 py-5 w-full bg-whiteBg dark:bg-darkBg leading-[25px] font-semibold">
+            Ask Toly
+          </h3>
+          <div className="w-full flex items-end justify-end pr-6">
+            <Button
+              link={handleModal}
+              classname="px-3  center gap-2 border-[#E5E7EB] dark:border-[#374151] border rounded "
+            >
+              <p>Speak to Toly</p>
+              <MdKeyboardVoice size={28} />
+            </Button>
+          </div>
+        </div>
         <div className="px-6 py-6 flex flex-col gap-5 bg-[#F9FAFB] dark:bg-[#111928] h-[92%] relative">
           <div
             ref={responseRef}
@@ -239,6 +371,29 @@ const AskToly: React.FC = () => {
           </div>
         </div>
       </Card>
+      <Modal handleModal={handleModal} show={openModal}>
+        <div className="mt-4 center flex-col gap-6">
+          {isListening ? (
+            <MicrophoneButton color="red" />
+          ) : isPlaying ? (
+            <InteractiveAudioSVG />
+          ) : voiceLoading ? (
+            <Loader />
+          ) : (
+            <MicrophoneButton color="blue" onClick={startListening} />
+          )}
+          {isListening ? (
+            <p>Listening...</p>
+          ) : isPlaying ? (
+            <p></p>
+          ) : voiceLoading ? (
+            <p className="w-3/4 text-center">{transcript}</p>
+          ) : (
+            <p>Click the mic to speak to Toly</p>
+          )}
+          {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+        </div>
+      </Modal>
     </DashboardLayout>
   );
 };
