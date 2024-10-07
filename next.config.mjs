@@ -9,6 +9,8 @@ const nextConfig = {
     PLAYHT_API_KEY: process.env.PLAYHT_API_KEY,
     PLAYHT_USER_ID: process.env.PLAYHT_USER_ID,
     SOLEXPRLORER_NODE_API_BASE_URL: process.env.SOLEXPRLORER_NODE_API_BASE_URL,
+    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
   },
   images: {
     remotePatterns: [
