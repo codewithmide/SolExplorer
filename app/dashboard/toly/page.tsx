@@ -97,16 +97,13 @@ const AskToly: React.FC = () => {
         timestamp: new Date(),
       };
       setVoiceChatMessages((prev: any) => [...prev, aiMessage]);
-      const response = await fetch(
-        `${TTSEndpoint}/api/generateSpeech`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ text: formattedResponse }),
-        }
-      );
+      const response = await fetch(`${TTSEndpoint}/api/generateSpeech`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text: formattedResponse }),
+      });
 
       if (response.ok) {
         const audioBlob = await response.blob();
@@ -372,7 +369,8 @@ const AskToly: React.FC = () => {
         </div>
       </Card>
       <Modal handleModal={handleModal} show={openModal}>
-        <div className="mt-4 center flex-col gap-6">
+        <div className="relative mt-4 center flex-col gap-6">
+          <p className="absolute -top-28 w-full text-sm text-center">Kindly use Google Chrome browser for a better experience</p>
           {isListening ? (
             <MicrophoneButton color="red" />
           ) : isPlaying ? (
