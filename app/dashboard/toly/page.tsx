@@ -369,8 +369,8 @@ const AskToly: React.FC = () => {
         </div>
       </Card>
       <Modal handleModal={handleModal} show={openModal}>
-        <div className="relative mt-4 center flex-col gap-6">
-          <p className="absolute -top-28 w-full text-sm text-center">Kindly use Google Chrome browser for a better experience</p>
+        <div className=" mt-4 center flex-col gap-6">
+          <p className=" w-full text-[12px] text-center">Kindly use Google Chrome browser for a better experience</p>
           {isListening ? (
             <MicrophoneButton color="red" />
           ) : isPlaying ? (
